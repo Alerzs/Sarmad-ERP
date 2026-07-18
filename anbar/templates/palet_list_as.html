@@ -1,0 +1,104 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ my_board.part_number }}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/palet_list_as.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    
+
+    <div style="margin-left:220px;">
+        <h1>{{ my_board.part_number }}</h1>
+        <h1>{{ my_board.project_name.name }}_{{ my_board.title }}</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+
+            <div class="nav-wrapper">
+                {% if first_id %}
+                  <span><a href="{% url 'panel_assemble_details' my_req.id first_id %}">{{ mapp|get_item:first_id }}</a></span>
+                {% endif %}
+              
+                {% if show_left_ellipsis %}
+                  <span class="ellipsis">…</span>
+                {% endif %}
+              
+                {% for pid in prev_ids %}
+                  <span><a href="{% url 'panel_assemble_details' my_req.id pid %}">{{ mapp|get_item:pid }}</a></span>
+                {% endfor %}
+              
+                <span><a href="{% url 'panel_assemble_details' my_req.id current_id %}" class="current">{{ mapp|get_item:current_id }}</a></span>
+              
+                {% for nid in next_ids %}
+                  <span><a href="{% url 'panel_assemble_details' my_req.id nid %}">{{ mapp|get_item:nid }}</a></span>
+                {% endfor %}
+              
+                {% if show_right_ellipsis %}
+                  <span class="ellipsis">…</span>
+                {% endif %}
+              
+                {% if last_id %}
+                  <span><a href="{% url 'panel_assemble_details' my_req.id last_id %}">{{ mapp|get_item:last_id }}</a></span>
+                {% endif %}
+              </div>
+        
+            <form method="POST" action="{% url 'panel_assemble_details' my_req.id  my_board.id%}">
+                {% csrf_token %}  
+            <button class='btn2', type="submit" name="action" value="save">Save Changes</button>
+            <table id="resizable-table">
+            </div>
+                <thead>
+                    <tr>
+                        <th>Palet</th>
+                        <th>Designators</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pallet in palets %}
+                        <tr
+                        {% if pallet.bom.status == 'AS' %}
+                            class="status-assembled"
+                        {% else %}
+                            class="status-tahvil"
+                        {% endif %}
+                        >
+                            <td>{{ pallet.palet_anbar.number }}</td>
+                            <td>{{ pallet.bom.designators }}</td>
+                            <td>
+                                <input type="hidden" name="original_description_{{ pallet.bom.id }}" value="{{ pallet.bom.description }}">
+                                <input type="text" name="description_{{ pallet.bom.id }}" value="{{ pallet.bom.description }}" style="border: 0px; padding: 5px 10px; text-align: center;" class="{% if pallet.bom.status == 'AS' %}status-assembled{% else %}status-tahvil{% endif %}">
+                            </td>
+                            <td>{{ pallet.quantity }}</td>
+                            <td>
+                                {% if pallet.bom.status == 'AS' %}
+                                    <input class="status-assembled" type="checkbox" name="unselected_palets" value="{{ pallet.bom.id }}">
+                                {% else %}
+                                    <input class="status-tahvil" type="checkbox" name="selected_palets" value="{{ pallet.bom.id }}">
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4">No pallet found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+    
+    <script>
+    </script>
+    
+</body>
+</html>

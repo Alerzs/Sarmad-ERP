@@ -1,0 +1,48 @@
+body {
+    background-color: #f6f4fa; /* soft lavender background */
+    font-family: 'Roboto', sans-serif;
+}
+
+.title {
+    text-align: center;
+    margin-top: 40px;
+    color: #5e3ea1; /* deep purple */
+}
+
+table {
+    width: 90%;
+    margin: 30px auto;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    border: 1px solid #dcd1ec; /* soft purple border */
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #e8dcf7; /* light purple header */
+    color: #4a2e83; /* darker purple text */
+    font-weight: bold;
+}
+
+td {
+    background-color: #faf7fd; /* very light purple row background */
+}
+
+.resizer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 1;
+}
+button:hover{
+    opacity: 50%;
+}

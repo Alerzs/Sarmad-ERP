@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Part</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Select Material</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="greenbutton">Accept</button>
+            <table id="resizable-table">
+                <thead>
+                    <tr>
+                        <th>Material ID</th>
+                        <th>Type</th>
+                        <th>Dimensions</th>
+                        <th>Alloy</th>
+                        <th>Order Name</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mat in materials %}
+                        <tr>
+                            <td>{{ mat.pk }}</td>
+                            <td>{{ mat.get_type_display }}</td>
+                            {% if mat.type == 'SCRAP' %}
+                                <td>-</td>
+                            {% else %}
+                                <td>{{ mat.length }}x{{ mat.width }}x{{ mat.hight }}</td>
+                            {% endif %}
+                            <td>{{ mat.alloy }}</td>
+                            <td>{{ mat.order }}</td>
+                            <td><input type="radio" name="mat_id" value="{{ mat.id }}"></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+</body>
+
+</html>

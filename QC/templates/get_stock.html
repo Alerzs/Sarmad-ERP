@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Get Stock</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_qc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_qc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/get_stock.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+
+</head>
+<body>
+    {% include "partials/_sidebar_qc.html" %}
+
+    <h1 style="margin-left: 220px;">Get Stock</h1>
+    <h2 style="margin-left: 220px;">{{ my_board.title }}-V{{ my_board.version }}S{{ my_board.serial }}</h2>
+
+    <div style="margin-left: 220px;">
+        <form method="post">
+            {% csrf_token %}
+
+            <button type="submit" class="search">Submit</button><br>
+            <table id="selected-parts">
+                <thead>
+                    <tr>
+                        <th colspan="9" style="background-color: #007e068a; color: rgb(8, 70, 8);">Selected Parts</th>
+                    </tr>
+                    <tr>
+                        <th class="green">Designator</th>
+                        <th class="green">Part Number</th>
+                        <th class="green">Code Anbar</th>
+                        <th class="green">Order Number</th>
+                        <th class="green">Inventory</th>
+                        <th class="green">Count</th>
+                        <th class="green">Remove</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <table id="resizable-table">
+                <thead>
+                    <tr id="header-row">
+                        <th data-field="designator">Designator</th>
+                        <th data-field="partnumber">Part Number</th>
+                        <th data-field="codeanbar">Code Anbar</th>
+                        <th data-field="ordernumber">Order Number</th>
+                        <th data-field="count">Inventory</th>
+                        <th>Add Part</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in boards %}
+                        {% for bom in group.bom %}
+                            {% for part in group.part %}
+                                <tr>
+                                    <td>{{ bom.designators }}</td>
+                                    <td>{{ bom.part_number }}</td>
+                                    <td>{{ part.id|default:"-" }}</td>
+                                    <td>{{ part.order.order_number|default:"-" }}</td>
+                                    <td>{{ part.count|default:"-" }}</td>
+                                    <td>
+                                        <button type="button" style="background: none; border: none; cursor: pointer;" class="add-part-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" style="pointer-events: none;">
+                                                <path d="M12 5v14M5 12h14" stroke="green" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <div id="pagination" style="margin-top: 10px; text-align: center; font-family: sans-serif;"></div>
+    <script src="{% static 'js/get_stock.js' %}"></script>
+</body>
+</html>

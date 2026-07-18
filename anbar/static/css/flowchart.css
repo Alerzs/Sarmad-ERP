@@ -1,0 +1,91 @@
+/* .flowchart {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    padding: 60px 20px;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+a {
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    transition: transform 0.2s;
+    border: 2px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+a:hover {
+    transform: scale(1.05);
+}
+
+.arrow {
+    font-size: 36px;
+    color: #555;
+    user-select: none;
+}
+
+.start {
+    padding: 20px 40px;
+    border-radius: 12px;
+    font-size: 22px;
+    color: white;
+}
+
+.node {
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: #222; 
+}
+
+
+.branch1 .start {
+    background-color: #1E90FF;
+    border-color: #1C86EE;
+}
+.branch1 .node {
+    background-color: #87CEFA; 
+    border-color: #4682B4;
+}
+
+
+.branch2 .start {
+    background-color: #28a745;
+    border-color: #218838;
+}
+.branch2 .node {
+    background-color: #66dd99;  
+    border-color: #2e8b57;
+}
+
+
+.branch3 .start {
+    background-color: #f39c12;
+    border-color: #e67e22;
+}
+.branch3 .node {
+    background-color: #f7c67b;  
+    border-color: #d35400;
+}
+
+
+.branch4 .start {
+    background-color: #8e44ad;
+    border-color: #732d91;
+}
+.branch4 .node {
+    background-color: #c39bd3;  
+    border-color: #7d3c98;
+} */

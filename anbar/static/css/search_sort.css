@@ -1,0 +1,39 @@
+th {
+    cursor: pointer;
+    position: relative;
+    padding-right: 20px;
+}
+
+th.asc::after,
+th.desc::after {
+    position: absolute;
+    right: 5px;
+    font-size: 0.8em;
+    color: #007bff;
+}
+
+th.asc::after {
+    content: "▲";
+}
+
+th.desc::after {
+    content: "▼";
+}
+.search {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #1e67b6;
+    color: #f0f0f0;
+    text-decoration: none;
+    border: 3px solid #013975;
+    border-radius: 7px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+input::placeholder {
+    color: snow;
+    font-weight: lighter;
+}
+.search:hover {
+    background-color: #6ea1d6;
+}

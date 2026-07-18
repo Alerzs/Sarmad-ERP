@@ -1,0 +1,29 @@
+.search {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #007bff;
+    color: snow;
+    text-decoration: none;
+    border: 1px solid #004a99;
+    border-radius: 7px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+input::placeholder{
+    color: gray;
+}
+table {
+    border-collapse: collapse;
+    width: 90%;
+}
+
+th, td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+.green{
+    background: linear-gradient(180deg, #d6f5e3,#d6f5e3);
+    background-color: #d6f5e3;
+    color: #1f5c33;
+}

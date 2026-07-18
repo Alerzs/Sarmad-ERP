@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/board_order_list.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_finance.html" %}
+    <div style="margin-left:220px;">
+        <h1>Board Order List</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Create Request</button>
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Board Name</th>
+                    <th>Version</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in titles %}
+                <tr class="summary-row"
+                    role="button"
+                    tabindex="0"
+                    aria-expanded="false"
+                    data-detail-id="details-{{ forloop.counter0 }}"
+                    style="cursor:pointer;">
+                    <td>{{ t.project_name__name }}</td>
+                    <td>{{ t.title }}</td>
+                    <td>{{ t.version }}</td>
+                </tr>
+                <tr id="details-{{ forloop.counter0 }}" class="details-row" style="display:none; background:#fafafa;">
+                    <td colspan="3" style="padding:0;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Orders</th>
+                                    <th>Serial</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% with has_any=False %}
+                                {% for b in boards %}
+                                    {% if b.project_name.name == t.project_name__name and b.title == t.title and b.version == t.version %}
+                                        {% if not has_any %}{% with has_any=True %}{% endwith %}{% endif %}
+                                        <tr>
+                                            <td>{{ b.title }}</td>
+                                            <td>{{ b.orders }}</td>
+                                            <td class="serial-cell"></td>
+                                            <td><input type="checkbox" name="req_boards" value="{{ b.pk }}" class="serial-checkbox" data-item-id="{{ b.id }}"></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endwith %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No orders available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </form>
+    </div>
+    <script src="{% static 'js/board_order_list.js' %}"></script>         
+</body>
+
+</html>

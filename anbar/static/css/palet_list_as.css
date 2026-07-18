@@ -1,0 +1,69 @@
+.btn2 {
+    background-color: #33ac28;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.btn2:hover {
+    background-color: #229218;
+    color: #ddd;
+}
+tr.status-assembled td{
+    background-color: #e1f7e7;
+}
+
+tr.status-tahvil td{
+    background-color: #fcf4dc;
+}
+.paused:hover {
+    background-color: rgb(221, 144, 1);
+}
+.paused {
+    background-color: orange;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+}
+.status-tahvil{
+    background-color: #fcf4dc !important;
+}
+.status-assembled{
+    background-color: #e1f7e7 !important;
+}
+.nav-wrapper {
+    display: flex;
+    justify-content: center; 
+    align-items: center;    
+    gap: 12px;               
+    margin: 20px  100px 20px 0;          
+    font-family: Arial, sans-serif;
+    flex-wrap: wrap;         
+}
+
+.nav-wrapper a {
+    text-decoration: none;
+    color: #007bff;        
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-wrapper a:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+.nav-wrapper .current {
+    font-weight: bold;
+    color: #fff;
+    background: #007bff;
+    border-radius: 4px;
+}
+
+.nav-wrapper .ellipsis {
+    color: #888;
+    font-weight: bold;
+}

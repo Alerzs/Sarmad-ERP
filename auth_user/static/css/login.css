@@ -1,0 +1,72 @@
+/* General Page Styling */
+@font-face {
+    font-family: 'Vazirmatn';
+    src: url('../fonts/Vazirmatn-Black.ttf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* استفاده از فونت در کل صفحه */
+body, input, button, label, h2, p {
+    font-family: 'Vazirmatn', sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+/* Login Container */
+form {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+/* Headline */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Error Message */
+p {
+    color: red;
+    text-align: center;
+    margin-bottom: 15px;
+}

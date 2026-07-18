@@ -1,0 +1,65 @@
+.footer{
+    background-color: #fde0b293;
+    color: #bf360c;
+}
+.footer b {
+    color: #bf360c;
+}
+.footer:hover{
+    opacity: 0.7;
+}
+form{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+.btn {
+    background-color: darkorange;
+    border-radius: 5px;
+    border: none;
+    padding: 7px 15px;
+    color: snow;
+    text-decoration: none;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s ease;
+    display: inline-block;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: #ff9933;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.gbtn{
+    font-size: 13px;
+    background-color: rgb(44, 121, 0);
+    border-radius: 5px;
+    border: none;
+    padding: 7px 15px;
+    color: snow;
+    text-decoration: none;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s ease;
+    display: inline-block;
+    cursor: pointer;
+}
+.gbtn:hover{
+    background-color: rgb(72, 112, 49);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+.gbtn:active{
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+#ordername{
+    background-color: rgba(255, 140, 0, 0.281);
+    border-radius: 5px;
+    padding: 7px 10px;
+    text-decoration: none;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}

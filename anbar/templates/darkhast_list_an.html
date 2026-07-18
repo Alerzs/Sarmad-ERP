@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anbar Panel</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Requests</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th data-field="id">Request ID</th>
+                    <th data-field="sender">Sender</th>
+                    <th data-field="board">Board</th>
+                    <th data-field="assembler">Assembler</th>
+                    <th data-field="type">Request Type</th>
+                    <th data-field="status">Status</th>
+                    <th>Export</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for darkhast in darkhasts %}
+                    <tr>    
+                        <td>
+                            <a href="{{ darkhast.pk }}" class="part-link" style="text-decoration: none;">{{ darkhast.pk }}</a>
+                        </td>
+                        <td>{{ darkhast.user.username }}</td>
+                        <td>{{ darkhast.board }}-V{{ darkhast.version }}</td>
+                        <td>{{ darkhast.for_user.username }}</td>
+                        <td>{{ darkhast.get_req_type_display }}</td>
+                        <td>{{ darkhast.get_status_display }}</td>
+                        <td>
+                            <form action="{% url 'export_excel' darkhast.pk %}" method="get">
+                                <button type="submit">Export</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No request found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="pagination" style="margin-top: 10px; text-align: center; font-family: sans-serif;"></div>
+    </div>
+    <div style="margin-left:220px;">
+        <h1>Mafghood</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Sender</th>
+                    <th>Request Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for maf in mafghood %}
+                    <tr>    
+                        <td>
+                            <a href="maf/{{ maf.pk }}" class="part-link" style="text-decoration: none;">{{ maf.pk }}</a>
+                        </td>
+                        <td>{{ maf.user.username }}</td>
+                        <td>{{ maf.date }}</td>
+                        <td>{{ maf.get_status_display }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7">No request found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-left:220px;">
+        <h1>Restocks</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Restock ID</th>
+                    <th>Sender</th>
+                    <th>Board</th>
+                    <th>Request Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in restock %}
+                    <tr>    
+                        <td>
+                            <a href="res/{{ res.pk }}" class="part-link" style="text-decoration: none;">{{ res.pk }}</a>
+                        </td>
+                        <td>{{ res.user.username }}</td>
+                        <td>{{ res.board.title }}(V{{res.sep_req.board.version}}S{{res.sep_req.board.serial}})</td>
+                        <td>{{ res.date }}</td>
+                        <td>{{ res.get_status_display }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5">No request found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="{% static 'js/darkhast_list_an.js' %}"></script> 
+</body>
+</html>

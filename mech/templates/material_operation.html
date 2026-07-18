@@ -1,0 +1,120 @@
+{% load static %}
+{% load custom_filter %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Material Operation</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/material_operation.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Materials</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Material ID</th>
+                    <th>Type</th>
+                    <th>Dimensions</th>
+                    <th>Alloy</th>
+                    <th>Order Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mat in materials %}
+                    <tr class="material-row" onclick="toggleOperations({{ mat.pk }})">
+                        <td>{{ mat.pk }}</td>
+                        <td>{{ mat.get_type_display }}</td>
+                        {% if mat.type == 'SCRAP' %}
+                            <td>-</td>
+                        {% else %}
+                            <td>{{ mat.length }}x{{ mat.width }}x{{ mat.hight }}</td>
+                        {% endif %}
+                        <td>{{ mat.alloy }}</td>
+                        <td>{{ mat.order }}</td>
+                        <td>
+                            <button type="button" onclick="event.stopPropagation(); openModal({{ mat.pk }})" class="greenbutton">
+                                Create Operation
+                            </button>
+                        </td>
+                    </tr>
+                    <tr id="operations-{{ mat.pk }}" class="operation-details-row" style="display: none;">
+                        <td colspan="6">
+                            {% with operations=operations_by_material|get_item:mat.pk %}
+                                {% if operations %}
+                                    <table class="inner-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Operator</th>
+                                                <th>Start</th>
+                                                <th>End</th>
+                                                <th>Duration</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for op in operations %}
+                                                <tr>
+                                                    <td>{{ op.description }}</td>
+                                                    <td>{{ op.operator.username }}</td>
+                                                    <td>{{ op.start }}</td>
+                                                    <td>{{ op.end }}</td>
+                                                    <td>{{ op.duration }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <p>No operations found for this material.</p>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="operationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 style="color: black;">Create Operation</h2>
+            <form method="post" action="{% url 'operation_mat' %}">
+                {% csrf_token %}
+                <input type="hidden" name="material_id" id="materialIdInput">
+                <label for="combo">Description:</label><br>
+                <select id="combo" name="description">
+                    <option value="خشن تراشی">خشن تراشی</option>
+                    <option value="تراشکاری">تراشکاری</option>
+                    <option value="رو تراشی">رو تراشی</option>
+                    <option value="کف تراشی">کف تراشی</option>
+                    <option value="آبکاری">آبکاری</option>
+                    <option value="حک لیزر">حک لیزر</option>
+                    <option value="برش لیزر">برش لیزر</option>
+                    <option value="سوراخ کاری">سوراخ کاری</option>
+                    <option value="متفرقه">متفرقه</option>
+                </select><br><br>
+
+                <label>Start Date/Time:</label><br>
+                <input type="datetime-local" name="start" required><br><br>
+
+                <label>End Date/Time:</label><br>
+                <input type="datetime-local" name="end" required><br><br>
+
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'js/material_operation.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All BOMs</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/project_list.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Project List</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                <tr>
+                    <td><a href="/anbar/boards/{{ project.name }}" class="part-link" style="text-decoration: none;">{{ project.name }}</a></td>
+                    <td>{{ project.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">No Projects available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

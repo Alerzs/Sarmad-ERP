@@ -1,0 +1,112 @@
+{% load static %}
+{% load custom_filter %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Separation</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Materials</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Material ID</th>
+                    <th>Type</th>
+                    <th>Dimensions</th>
+                    <th>Alloy</th>
+                    <th>Order Name</th>
+                    <th>Parting</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mat in materials %}
+                    <tr class="material-row" onclick="toggleParts({{ mat.pk }})">
+                        <td>{{ mat.pk }}</td>
+                        <td>{{ mat.get_type_display }}</td>
+                        {% if mat.type == 'SCRAP' %}
+                            <td>-</td>
+                        {% else %}
+                            <td>{{ mat.length }}x{{ mat.width }}x{{ mat.hight }}</td>
+                        {% endif %}
+                        <td>{{ mat.alloy }}</td>
+                        <td>{{ mat.order }}</td>
+                        <td>
+                            <button type="button" onclick="confirmParting({{ mat.pk }})" class="greenbutton" style="background:none; border:none; cursor:pointer;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="24" height="24" fill="black" >
+                                    <path d="M509.4 98.6c7.6-7.6 20.3-5.7 24.1 4.3 6.8 17.7 10.5 37 10.5 57.1 0 88.4-71.6 160-160 160-17.5 0-34.4-2.8-50.2-8L146.9 498.9c-28.1 28.1-73.7 28.1-101.8 0s-28.1-73.7 0-101.8L232 210.2c-5.2-15.8-8-32.6-8-50.2 0-88.4 71.6-160 160-160 20.1 0 39.4 3.7 57.1 10.5 10 3.8 11.8 16.5 4.3 24.1l-88.7 88.7c-3 3-4.7 7.1-4.7 11.3l0 41.4c0 8.8 7.2 16 16 16l41.4 0c4.2 0 8.3-1.7 11.3-4.7l88.7-88.7z"/>
+                                  </svg>
+                                  
+                            </button>
+                        </td>
+                    </tr>
+                    <tr id="operations-{{ mat.pk }}" class="operation-details-row" style="display: none;">
+                        <td colspan="6">
+                            {% with parts=parts_by_material|get_item:mat.pk %}
+                                {% if parts %}
+                                    <table class="inner-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Part Serial</th>
+                                                <th>Title</th>
+                                                <th>Project</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for pr in parts %}
+                                                <tr>
+                                                    <td>{{ pr.part_number }}</td>
+                                                    <td>{{ pr.title }}</td>
+                                                    <td>{{ pr.project_name.name }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <p>No operations found for this material.</p>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="confirmationModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background:white; padding:20px; border-radius:8px; text-align:center;">
+            <p>Are you sure you want to start parting?</p>
+            <form id="partingForm" method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="material_id" id="material_id_input">
+                <button type="submit" class="greenbutton">Yes</button>
+                <button type="button" onclick="closeModal()" class="greenbutton">Cancel</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function toggleParts(materialId) {
+            const row = document.getElementById(`operations-${materialId}`);
+            row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+        }
+    
+        function confirmParting(materialId) {
+            document.getElementById('material_id_input').value = materialId;
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+    
+        function closeModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

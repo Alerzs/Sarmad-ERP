@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Get Part Request</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/darkhast_part2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/search_sort.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+
+    <h1 style="margin-left: 220px;">Select Your Options</h1>
+
+    <div style="margin-left: 220px;">
+        <form method="post">
+            {% csrf_token %}
+
+            <button type="submit" class="search">Submit</button><br>
+            <table id="selected-parts">
+                <thead>
+                    <tr>
+                        <th colspan="9" style="background-color: #007e068a; color: rgb(8, 70, 8); background: linear-gradient(180deg, #007e068a,#007e068a);">Selected Parts</th>
+                    </tr>
+                    <tr>
+                        <th class="green">Project</th>
+                        <th class="green">Board</th>
+                        <th class="green">Designator</th>
+                        <th class="green">Part Number</th>
+                        <th class="green">Code Anbar</th>
+                        <th class="green">Order Number</th>
+                        <th class="green">Inventory</th>
+                        <th class="green">Count</th>
+                        <th class="green">Remove</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <table id="resizable-table">
+                <thead>
+                    <tr id="header-row">
+                        <th data-field="project">Project</th>
+                        <th data-field="boardname">Board Name</th>
+                        <th data-field="designator">Designator</th>
+                        <th data-field="partnumber">Part Number</th>
+                        <th data-field="codeanbar">Code Anbar</th>
+                        <th data-field="ordernumber">Order Number</th>
+                        <th data-field="count">Inventory</th>
+                        <th>Add Part</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in boards %}
+                        {% for bom in group.bom %}
+                            {% for part in group.part %}
+                                <tr>
+                                    <td>{{ bom.board.project_name.name }}</td>
+                                    <td>E{{ bom.board.name }}V{{ bom.board.version }}({{ bom.board.title }})</td>
+                                    <td>{{ bom.designators }}</td>
+                                    <td>{{ bom.part_number }}</td>
+                                    <td>{{ part.id }}</td>
+                                    <td>{{ part.order.order_number }}</td>
+                                    <td>{{ part.count }}</td>
+                                    <td>
+                                        <button type="button" style="background: none; border: none; cursor: pointer;" class="add-part-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" style="pointer-events: none;">
+                                                <path d="M12 5v14M5 12h14" stroke="green" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <div id="pagination" style="margin-top: 10px; text-align: center; font-family: sans-serif;"></div>
+    <script src="{% static 'js/darkhast_part2.js' %}"></script>  
+</body>
+</html>

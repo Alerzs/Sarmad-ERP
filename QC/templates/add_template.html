@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_qc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_qc.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_qc.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Materials</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr id="header-row">
+                  <th>Project</th>
+                  <th>Title</th>
+                  <th>Version</th>
+                  <th>Template</th>
+                </tr>
+              </thead>
+            <tbody>
+                {% for board in boards %}
+                    <tr>
+                        <td>{{ board.project_name__name }}</td>
+                        <td>{{ board.title }}</td>
+                        <td>{{ board.version }}</td>
+                        <td>
+                            <form method="post" enctype="multipart/form-data" id="E{{ board.name }}V{{ board.version }}">
+                            {% csrf_token %}    
+                            {% if board.has_template %}
+                                <label for="fileInputE{{ board.name }}V{{ board.version }}" style="cursor: pointer;">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="green" stroke="green" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H18C19.6569 23 21 21.6569 21 20V4C21 2.34315 19.6569 1 18 1H10ZM11 3H18C18.5523 3 19 3.44772 19 4V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3ZM9 7H6.41421L9 4.41421V7ZM16.7682 12.6402C17.1218 12.2159 17.0645 11.5853 16.6402 11.2318C16.2159 10.8782 15.5853 10.9355 15.2318 11.3598L10.9328 16.5186L8.70711 14.2929C8.31658 13.9024 7.68342 13.9024 7.29289 14.2929C6.90237 14.6834 6.90237 15.3166 7.29289 15.7071L10.2929 18.7071C10.4916 18.9058 10.7646 19.0117 11.0453 18.999C11.326 18.9862 11.5884 18.856 11.7682 18.6402L16.7682 12.6402Z" fill="#000000"/>
+                                    </svg>
+                                </label>
+                                <input type="file" id="fileInputE{{ board.name }}V{{ board.version }}" name="file" accept=".docx" hidden  onchange="return confirmSubmit(event, '{{ board.title }}', '{{ board.version }}')">
+                                <input type="hidden" name="boardname" value="E{{ board.name }}V{{ board.version }}">
+                            {% else %}
+                                <label for="fileInputE{{ board.name }}V{{ board.version }}" style="cursor: pointer;" >
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="purple" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 16V3M12 3L16 7.375M12 3L8 7.375" stroke="purple" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </label>
+                                <input type="file" id="fileInputE{{ board.name }}V{{ board.version }}" name="file" accept=".docx" hidden  onchange="return confirmSubmit(event, '{{ board.title }}', '{{ board.version }}')">
+                                <input type="hidden" name="boardname" value="E{{ board.name }}V{{ board.version }}">
+                            {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No boards found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function confirmSubmit(event, tit, ver){
+            event.preventDefault()
+            const form = event.target.closest("form")
+            form.submit()
+            alert(`template for ${tit} version ${ver} was submited`)
+        }
+    </script>
+</body>
+
+</html>

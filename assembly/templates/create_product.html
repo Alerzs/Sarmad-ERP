@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/create_product.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_assembly.html" %}
+
+    <div style="margin-left: 220px;">
+    {% if thisproject %}
+    <h1>{{thisproject}} Tree</h1>
+    {% else %}
+        <h1>All Tree</h1>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label>Select Project</label>
+        <select name="project" id="projectSelect">
+            <option selected  disabled>Please Select</option>
+            {% for project in projects %}
+                <option value="{{ project.name }}">{{ project.name }}</option>
+            {% endfor %}
+        </select> 
+    </form>
+    <div style="display: flex;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Quantity</th>
+                    <th>Add Part</th>
+                    <th>Selected Parts</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for elec in tree %}
+                <tr>
+                    <td>{{ elec.partnumber }}</td>
+                    <td class="quantity-limit">{{ elec.quantity }}</td>
+                    <td>
+                        <select class="part_select" data-mech-id="{{ mech.partnumber }}">
+                            <option disabled selected>Select Part to add</option>
+                            {% for board in elec.rel_parts %}
+                            <option value="{{ board }}">{{ board }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="selected-parts"></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No board found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <table style="width: 20%;">
+            <thead>
+                <tr>
+                    <th style="border-left: none;">Mechanic</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border-left: none;">
+                        <select class="mech_select" required>
+                            <option disabled selected hidden>Select Mech Product</option>
+                            {% for part in mech_products %}
+                            <option value="{{ part.productnumber }}">Product {{ part.productnumber }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        
+    <form action="{% url 'save_product_assembly' %}" method="post" id="send_product">
+        {% csrf_token %}
+        <label for="product_name">Product Name: </label>
+        <input type="text" name="product_name" id="product_name" required>
+        <input type="hidden" name="project" value="{{ thisproject }}">
+        <button id="create-product" type="button">Create Product</button>
+    </form>
+    </div>
+    <script src="{% static 'js/create_product.js' %}"></script> 
+</body>
+
+</html>

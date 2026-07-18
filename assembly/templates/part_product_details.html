@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Part Summery</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_assembly.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_assembly.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Part Summery</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="3">Material Operations</th>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <th>Operator</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for op in sheet_op %}
+                    <tr>
+                        <td>op.description</td>
+                        <td>op.operator</td>
+                        <td>op.duration</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="3">Part Operations</th>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <th>Operator</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for op in part_op %}
+                    <tr>
+                        <td>op.description</td>
+                        <td>op.operator</td>
+                        <td>op.duration</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

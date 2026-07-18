@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Requests</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Sender</th>
+                    <th>Assembler</th>
+                    <th>Request Date</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for darkhast in darkhasts %}
+                    <tr>    
+                        <td>
+                            <a href="{{ darkhast.pk }}" class="part-link" style="text-decoration: none;">{{ darkhast.pk }}</a>
+                        </td>
+                        <td>{{ darkhast.user.username }}</td>
+                        <td>{{ darkhast.for_user.username }}</td>
+                        <td>{{ darkhast.date }}</td>
+                        <td>{{ darkhast.description }}</td>
+                        <td>
+                            {% if darkhast.status == 'PND' %}
+                                Pending
+                            {% elif darkhast.status == 'ACC' %}
+                                Accepted
+                            {% else %}
+                                Rejected
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No request found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

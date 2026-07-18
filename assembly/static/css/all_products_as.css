@@ -1,0 +1,14 @@
+.ret_btn{
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #8f210e;
+            border: 1px solid #4b0f05;
+            color: white;
+            border-radius: 6px;
+        }
+        .ret_btn:hover{
+            opacity: 0.7;
+        }
+        td{
+            padding: 0;
+        }

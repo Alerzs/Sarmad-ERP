@@ -1,0 +1,49 @@
+.container {
+            margin-left: 220px;
+            padding: 30px;
+        }
+        form {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+        }
+        input[type="text"],
+        input[type="number"]
+         {
+            width: 95%;
+            padding: 10px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #8f210e;
+            border: 1px solid #4b0f05;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        .custom-file-upload:hover {
+            opacity: 0.7;
+        }
+        .download-button {
+        display: inline-block;
+        background-color: #28a745;
+        border: 1px solid #1b742f;;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        }
+
+        .download-button:hover {
+        background-color: #218838;
+        }

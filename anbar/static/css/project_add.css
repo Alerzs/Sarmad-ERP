@@ -1,0 +1,75 @@
+body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+        }
+        .container {
+            margin-left: 220px;
+            padding: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+        }
+        form {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+        }
+        input[type="text"],
+        input[type="number"]
+         {
+            width: 95%;
+            padding: 10px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        select{
+            display: block;
+            margin: 10px 0 20px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border: 1px solid #165799;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #3498db;
+            border: 1px solid #165799;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #2980b9;
+        }
+        .greenbtn{
+            text-decoration: none;
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 20px 0 0;
+            color: snow;
+            background-color: green;
+            border: 1px solid darkgreen;
+            border-radius: 6px;
+        }

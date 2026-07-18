@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Select Requested Parts</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <form id="part-form" method="post">
+            {% csrf_token %}
+            <table id="resizable-table">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Title</th>
+                        <th>Part ID</th>
+                        <th>Version</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for part in parts %}
+                        <tr>
+                            <td>{{ part.project_name.name }}</td>
+                            <td>{{ part.title }}</td>
+                            <td>M{{ part.name }}</td>
+                            <td>V{{ part.version }}</td>
+                            <td>
+                                <input type="hidden" name="part_id[]" value="{{ part.id }}">
+                                <input type="number" name="quantity[]" min="1" max="100" style="width: 70px;">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="greenbutton" style="margin: 0 auto; display: block; width: 130px;">Send Request</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('part-form').addEventListener('submit', function(event) {
+            const form = event.target;
+            const rows = form.querySelectorAll('tbody tr');
+            let hasValidInput = false;
+    
+            rows.forEach(row => {
+                const quantityInput = row.querySelector('input[name="quantity[]"]');
+                const partIdInput = row.querySelector('input[name="part_id[]"]');
+    
+                if (!quantityInput.value || quantityInput.value <= 0) {
+                    quantityInput.disabled = true;
+                    partIdInput.disabled = true;
+                } else {
+                    hasValidInput = true;
+                }
+            });
+    
+            if (!hasValidInput) {
+                event.preventDefault();
+                alert("Please enter a quantity for at least one part.");
+            }
+        });
+    </script>
+</body>
+
+</html>

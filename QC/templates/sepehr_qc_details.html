@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_qc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_qc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sepehr_qc_details.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_qc.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>{{board.project_name.name}}-{{board.title}}-V{{board.version}}S{{board.serial}}</h1>  
+    </div>
+
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr id="header-row">
+                  <th>Index</th>
+                  <th>Upload</th>
+                  <th>Inspect</th>
+                  <th>ReStock</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+            <tbody>
+                {% for seplog in seplogs %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <label for="fileInput{{ seplog.pk }}" style="cursor: pointer;">
+                                    <?xml version="1.0" encoding="utf-8"?>
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="purple" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 16V3M12 3L16 7.375M12 3L8 7.375" stroke="purple" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </label>
+                                <input type="file" id="fileInput{{ seplog.pk }}" name="file" accept=".pdf" onchange="alert('File has submited'); this.form.submit()" hidden>
+                                <input type="hidden" name="sep_id" value="{{ seplog.pk }}">
+                            </form>
+                        </td>
+                        <td>
+                            {% if seplog.has_file %}
+                            <form action="{% url 'open_file_QC' %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="rd_url" value="{{ request.path }}">
+                                <input type="hidden" name="file_path" value="C:\mech\Sepehr\E{{ board.name }}V{{ board.version }}S{{ board.serial }}-{{ seplog.pk }}.pdf"> 
+                                <button type="submit" style="background:none; border:none; cursor:pointer;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="purple" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14 2 14 8 20 8"/>
+                                                <line x1="8" y1="13" x2="16" y2="13"/>
+                                                <line x1="8" y1="17" x2="16" y2="17"/>
+                                            <line x1="8" y1="9" x2="12" y2="9"/>
+                                        </svg>  
+                                </button>    
+                            </form>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if seplog.status == 'NOR' %}
+                            <a href="/QC/get_stock/{{seplog.pk}}" style="display: block; width:24px; margin: 0 auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24" fill="royalblue" style="pointer-events: none;">
+                                    <path d="M307.8 18.4c-12 5-19.8 16.6-19.8 29.6l0 80-112 0c-97.2 0-176 78.8-176 176 0 113.3 81.5 163.9 100.2 174.1 2.5 1.4 5.3 1.9 8.1 1.9 10.9 0 19.7-8.9 19.7-19.7 0-7.5-4.3-14.4-9.8-19.5-9.4-8.8-22.2-26.4-22.2-56.7 0-53 43-96 96-96l96 0 0 80c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-9.2-9.2-22.9-11.9-34.9-6.9z"/>
+                                </svg>
+                            </a>
+                            {% else %}
+                            <a href="/QC/sepehr_history/{{seplog.pk}}" style="display: block; width:24px; margin: 0 auto">
+                                <?xml version="1.0" encoding="utf-8"?>
+                                <svg width="24px" height="24px" viewBox="2 2 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events: none;">
+                                    <path d="M5.52786 16.7023C6.6602 18.2608 8.3169 19.3584 10.1936 19.7934C12.0703 20.2284 14.0409 19.9716 15.7434 19.0701C17.446 18.1687 18.766 16.6832 19.4611 14.8865C20.1562 13.0898 20.1796 11.1027 19.527 9.29011C18.8745 7.47756 17.5898 5.96135 15.909 5.02005C14.2282 4.07875 12.2641 3.77558 10.3777 4.16623C8.49129 4.55689 6.80919 5.61514 5.64045 7.14656C4.47171 8.67797 3.89482 10.5797 4.01579 12.5023M4.01579 12.5023L2.51579 11.0023M4.01579 12.5023L5.51579 11.0023" stroke="purple" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 8V12L15 15" stroke="purple" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td>{{ seplog.get_status_display }}</td>
+                        <td>{{ seplog.date }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7">No Sepehr logs found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form method="post" onsubmit="return confirmSubmit();" style="display: flex; justify-content: center;">
+            {% csrf_token %}
+            <button type="submit" id="add_log">+ Add Log</button>
+        </form>
+    </div>
+    <script>
+        function confirmSubmit() {
+            return confirm("Are you sure you want to add new Sepehr log?");
+        }
+    </script>
+</body>
+
+</html>

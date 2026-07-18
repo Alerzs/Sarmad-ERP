@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Part List</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main_finance.css' %}">
+  <link rel="stylesheet" href="{% static 'css/sidebar_finance.css' %}">
+  <link rel="stylesheet" href="{% static 'css/order.css' %}">
+  <script src="{% static 'js/sidebar.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_finance.html" %}
+    {% if payment_in %}
+    <script>
+        let plt, pay;
+        function paletOut(bool){
+            plt = bool
+        }
+        function paymentOut(bool){
+            pay = bool
+        }
+    </script>
+    
+    
+    <div style="margin-left: 220px;">
+        <h1>Payment Report</h1>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px;">
+            <a class="btn" href="/finance/orders/{{order.pk}}">Order Details</a>
+            <a class="btn" href="/finance/payment/{{order.pk}}" style="background-color: rgb(194, 107, 0);">Payment Details</a>
+            <a class="btn" href="/finance/shipment/{{order.pk}}">Shipment Details</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Part Number</th>
+                    <th>Ordered Quantity</th>
+                    <th>Paid Quantity</th>
+                    <th>Shortage</th>
+                    <th>Unit Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plt in payment_in %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ plt.part_number }}</td>
+                    <td>{{ plt.palet_quantity|default:'-' }}</td>
+                    <td>{{ plt.quantity }}</td>
+                    <td>{{ plt.shortage }}</td>
+                    <td>{{ plt.price }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">No parts available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if palet_out %}
+        <script>
+            paletOut(true)
+        </script>
+        <h1>Unpaid</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Part Number</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plt in palet_out %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ plt.part_number }}</td>
+                    <td>{{ plt.total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <script>
+            paletOut(false)
+        </script>
+        {% endif %}
+        {% if payment_out %}
+        <script>
+            paymentOut(true)
+        </script>
+        <h1>Not In Order</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Part Number</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plt in payment_out %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ plt.part_number }}</td>
+                    <td>{{ plt.quantity }}</td>
+                    <td>{{ plt.price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <script>
+            paletOut(false)
+        </script>
+        {% endif %}
+        <div style="display: flex; justify-content: center; gap: 15px;">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %} 
+                <input type="hidden" name="payment_in_data" value="{{ payment_in_json }}">
+                <label class="btn" for="file_input" style="cursor: pointer;">Upload Shipment Report</label>
+                <input id="file_input" type="file" name="file" accept=".xlsx" onchange="return acceptFunction(event)" hidden>
+            </form>
+            <form action="/finance/templates/" method="post">
+                {% csrf_token %}
+                <button class="gbtn">Template</button>
+                <input type="hidden" name="type" value="shipment">
+            </form>
+        </div>
+    </div>
+    <script>
+        function acceptFunction(e){
+            if (plt || pay){
+                return alert('order and payment report do not match!!!')
+            }
+            const form = e.target.closest('form')
+            form.submit()
+        }
+        
+    </script>
+    {% else %}
+    <div style="margin-left: 220px;">
+        <h1>Shipment Report</h1>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px;">
+            <a class="btn" href="/finance/orders/{{order.pk}}">Order Details</a>
+            <a class="btn" href="/finance/payment/{{order.pk}}" style="background-color: rgb(194, 107, 0);">Payment Details</a>
+            <a class="btn" href="/finance/shipment/{{order.pk}}">Shipment Details</a>
+        </div>
+        <h2 style="display: flex; justify-content: center;">There is no payment report.</h2>
+    </div>
+    {% endif %}
+</body>
+</html>

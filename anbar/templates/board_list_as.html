@@ -1,0 +1,136 @@
+{% load static %}
+{% load custom_filter %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Board List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/board_list_as.css' %}">
+    <link rel="stylesheet" href="{% static 'css/search_sort.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Board List</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>serial</th>
+                    <th>Project</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Add Operation</th>
+                    <th>Send to QC</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for board in boards %}
+                <tr class="material-row" onclick="toggleOperations({{ board.pk }})">
+                        <td><a href="/anbar/panel_assemble/{{ my_req.id }}/{{ board.id }}" style="text-decoration: none;">{{ board.part_number }}</a></td>
+                        <td>{{ board.project_name.name }}</td>
+                        <td>{{ board.title }}</td>
+                        <td>{{ board.get_status_display }}</td>
+                        <td>
+                            <button type="button" onclick="event.stopPropagation(); openModal({{ board.pk }})" style="background: none; border: none; cursor: pointer;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" style="pointer-events: none;">
+                                    <path d="M12 5v14M5 12h14" stroke="green" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                  </svg>
+                            </button>
+                        </td>
+                        {% if board.status == 'CA' or board.status == 'PA' %}
+                        <td>
+                            <form action="{% url 'send_to_qc'%}" method="post" onsubmit="return confirmSubmit(event);">
+                                {% csrf_token %}
+                                <input type="hidden" name="toqc" value="{{board.pk}}">
+                                <input type="hidden" name="req" value="{{my_req.pk}}">
+                                <button type="submit" style="background: none; border: none; cursor: pointer;" id="send-to-qc">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24" fill="royalblue" style="pointer-events: none;">
+                                    <path d="M307.8 18.4c-12 5-19.8 16.6-19.8 29.6l0 80-112 0c-97.2 0-176 78.8-176 176 0 113.3 81.5 163.9 100.2 174.1 2.5 1.4 5.3 1.9 8.1 1.9 10.9 0 19.7-8.9 19.7-19.7 0-7.5-4.3-14.4-9.8-19.5-9.4-8.8-22.2-26.4-22.2-56.7 0-53 43-96 96-96l96 0 0 80c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-9.2-9.2-22.9-11.9-34.9-6.9z"/>
+                                </svg>
+                                </button>
+                            </form>
+                        </td>
+                        {% else %}
+                        <td>
+                            <?xml version="1.0" encoding="utf-8"?>
+                            <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="darkgreen" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    <tr id="operations-{{ board.pk }}" class="operation-details-row" style="display: none;">
+                        <td colspan="6">
+                            {% with operations=operations_by_board|get_item:board.pk %}
+                                {% if operations %}
+                                    <table class="inner-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Operator</th>
+                                                <th>Start</th>
+                                                <th>End</th>
+                                                <th>Duration</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for op in operations %}
+                                                <tr>
+                                                    <td>{{ op.description }}</td>
+                                                    <td>{{ op.operator.username }}</td>
+                                                    <td>{{ op.start }}</td>
+                                                    <td>{{ op.end }}</td>
+                                                    <td>{{ op.duration }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <p>No operations found for this board.</p>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No boards found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="operationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 style="color: black;">Create Operation</h2>
+            <form method="post" action="{% url 'panel_assemble_board' my_req.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="board_id" id="boardIdInput">
+                <label for="combo">Description:</label><br>
+                <select id="combo" name="description">
+                    <option value="مونتاژ">مونتاژ</option>
+                    <option value="شست و شو">شست و شو</option>
+                    <option value="اولیه QC">اولیه QC</option>
+                    <option value="رفع ایرادات">رفع ایرادات</option>
+                    <option value="نهایی QC">نهایی QC</option>
+                    <option value="متفرقه">متفرقه</option>
+                </select><br><br>
+
+                <label>Start Date/Time:</label><br>
+                <input type="datetime-local" name="start" required><br><br>
+
+                <label>End Date/Time:</label><br>
+                <input type="datetime-local" name="end" required><br><br>
+
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'js/board_list_as.js' %}"></script>
+</body>
+</html>

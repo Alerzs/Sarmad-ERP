@@ -1,0 +1,17 @@
+  tr.status-tahvil td{
+    background-color: #fff9e6;
+}
+tr.status-empty td{
+    background-color: #ffeaed;
+}
+.search {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #007bff;
+    color: snow;
+    text-decoration: none;
+    border: 1px solid #004a99;
+    border-radius: 7px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}

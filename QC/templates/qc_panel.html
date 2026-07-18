@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_qc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_qc.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_qc.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Requests</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Board</th>
+                    <th>Sender</th>
+                    <th>Operator</th>
+                    <th>Request Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in reqs %}
+                    <tr>    
+                        <td>
+                            <a href="{{ req.pk }}" class="part-link" style="text-decoration: none;">{{ req.pk }}</a>
+                        </td>
+                        <td>{{ req.board_set.first}}</td>
+                        <td>{{ req.sender.username }}</td>
+                        <td>{{ req.operator.username }}</td>
+                        <td>{{ req.date }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No request found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

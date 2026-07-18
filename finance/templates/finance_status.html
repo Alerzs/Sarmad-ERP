@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_finance.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_finance.html" %}
+    <h1 style="margin-left: 220px;">{{ title }}</h1>
+    <p style="margin-left: 220px;">{{ message|safe }}</p>
+</body>
+</html>

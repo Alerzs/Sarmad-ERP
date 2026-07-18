@@ -1,0 +1,50 @@
+
+input[type="text"], 
+input[type="number"], 
+select {
+    padding: 4px 10px;
+    border: 1px solid #2e7d32;
+    border-radius: 4px;
+    background-color: #f1f8f4;
+    color: #0a4b0f;
+    outline: none;
+    margin: 2px;
+    font-size: 14px;
+}
+
+input[type="text"]:focus, 
+input[type="number"]:focus, 
+select:focus {
+    border-color: #1b5e20;
+    box-shadow: 0 0 4px #1b5e20;
+}
+
+.cancel{
+    background: #f5fdf8; 
+    border: none;
+    cursor: pointer;
+}
+.cancel:hover{
+    background-color: #f5fdf8; 
+}
+.greenbutton {
+    padding: 7px 12px;
+    border: 1px solid #1b5e20;
+    border-radius: 4px;
+    background-color: #2e7d32;
+    color: snow;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 14px;
+}
+
+.greenbutton:hover {
+    background-color: #1b5e20;
+}
+
+.greenbutton:hover {
+    color: #ccc;
+}
+button:hover{
+    opacity: 70%;
+}

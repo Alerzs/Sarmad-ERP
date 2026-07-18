@@ -1,0 +1,135 @@
+.sidebar {
+    width: 220px;
+    background: linear-gradient(45deg, #4fc089, #043820);
+    color: snow;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+    z-index: 1000;
+    border-right: 1px solid #155f3c;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Scrollbar Styling */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.sidebar h2 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px;
+}
+
+.sidebar h4 {
+    font-size: 0.95rem;
+    color: #f0f0f0;
+    margin-bottom: 20px;
+}
+
+.menu {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.has-submenu > .toggle,
+.links a {
+    display: block;
+    padding: 10px 15px;
+    margin: 6px 0;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: background 0.3s, color 0.3s;
+    font-weight: 500;
+    text-decoration: none;
+    color: #d6f5e3;
+}
+
+.has-submenu:hover > .toggle,
+.links a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #a3f1c3;
+}
+
+.submenu {
+    list-style: none;
+    font-size: 0.9rem;
+    padding-left: 20px;
+    margin-top: 6px;
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.has-submenu:hover .submenu {
+    display: none;
+}
+
+.submenu li {
+    margin: 6px 0;
+}
+
+.submenu a {
+    color: #ffffffcc;
+    text-decoration: none;
+    padding: 6px 10px;
+    display: block;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.submenu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.main-content {
+    z-index: 0;
+    margin-left: 260px;
+    padding: 20px;
+    width: calc(100% - 260px);
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+
+.sidebar hr {
+    border: none;
+    height: 2px;
+    background-color: #a3f1c3; /* soft minty green */
+    margin: 20px 0 10px 0;
+    border-radius: 2px;
+}
+.links svg {
+    vertical-align: middle;
+    position: relative;
+    top: -3px;
+}
+.current svg{
+    vertical-align: middle;
+    position: relative;
+    top: -3px;
+}
+.current {
+    display: block;
+    padding: 10px 15px;
+    margin: 6px 0;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: background 0.3s, color 0.3s;
+    font-weight: 500;
+    text-decoration: none;
+    opacity: 0.5;
+}

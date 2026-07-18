@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_assembly.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/drawflow.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flow.css' %}">
+</head>
+<body>
+    {% include "partials/_sidebar_assembly.html" %}
+
+    <h2 style="text-align:center;">{{ selected_project }} Product Flowchart</h2>
+    <form method="post" style="text-align:center; margin-bottom: 10px;">
+        {% csrf_token %}
+        <label for="projectname">Select Project: </label>
+        <select name="projectname" id="projectname" onchange="this.form.submit()">
+            <option value="" selected>---Select Project---</option>
+            {% for prj in projects %}
+                <option value="{{ prj }}">{{ prj }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div id="drawflow"></div>
+
+    <script src="{% static 'js/drawflow.min.js' %}"></script>
+    <script>
+        const container = document.getElementById('drawflow')
+        container.addEventListener('mousedown', () => {drawflow.style.cursor = 'grabbing'})
+        container.addEventListener('mouseup', () => { drawflow.style.cursor = 'grab'})
+        container.addEventListener('mouseleave', () => { drawflow.style.cursor = 'grab'})
+
+        const editor = new Drawflow(container)
+        editor.editor_mode = 'fixed'
+        editor.start()
+
+        const boardStatData = JSON.parse('{{ boardstages|escapejs }}')
+        const partStatData = JSON.parse('{{ partstages|escapejs }}')
+        const productData = JSON.parse('{{ products|escapejs }}')
+        const selected_project = '{{ selected_project }}'
+
+        const mnode1 = editor.addNode('node1', 1, 1, 100, 50, 'gnode', {}, `<a href="flow_details/${selected_project}/part_ept" title="${partStatData?.EPT?.length || 0} Parts \n${partStatData?.EPT || ""} ">دریافت متریال</a>`)
+        const mnode2 = editor.addNode('node1', 1, 1, 300, 50, 'gnode', {}, `<a href="flow_details/${selected_project}/part_con" title="${partStatData?.CON?.length || 0} Parts \n${partStatData?.PRT || ""} ">تعریف قطعات روی متریال</a>`)
+        const mnode3 = editor.addNode('node1', 1, 1, 500, 50, 'gnode', {}, `<a href="flow_details/${selected_project}/part_sep" title="${partStatData?.SEP?.length || 0} Parts \n${partStatData?.SEP || ""} ">جدا سازی متریال</a>`)
+        const mnode4 = editor.addNode('node1', 1, 1, 700, 50, 'gnode', {}, `<a href="flow_details/${selected_project}/part_hck" title="${partStatData?.HCK?.length || 0} Parts \n${partStatData?.HCK || ""} ">حک لیزر</a>`)
+        const mnode5 = editor.addNode('node1', 1, 1, 900, 50, 'gnode', {}, `<a href="flow_details/${selected_project}/part_aab" title="${partStatData?.AAB?.length || 0} Parts \n${partStatData?.AAB || ""} ">آبکاری</a>`)
+        const mnode6 = editor.addNode('node1', 1, 1, 1100, 50, 'gnode', {}, `<a href="flow_details/${selected_project}/part_qc" title="${partStatData?.QC?.length || 0} Parts \n${partStatData?.QC || ""} ">کنترل کیفیت</a>`)
+        const mnode7 = editor.addNode('node1', 1, 1, 1300, 50, 'gnode', {}, `<a href="flow_details/${selected_project}/part_asm" title="${partStatData?.ASM?.length || 0} Parts \n${partStatData?.ASM || ""} ">تحویل به اسمبلی</a>`)
+
+        const enode1 = editor.addNode('node1', 1, 1, 100, 250, 'bnode', {}, `<a href="flow_details/${selected_project}/board_or" title="${boardStatData?.OR?.length || 0} Boards \n${boardStatData?.OR || ""}">سفارش بورد</a>`)
+        const enode2 = editor.addNode('node2', 1, 1, 300, 250, 'bnode', {}, `<a href="flow_details/${selected_project}/board_rb" title="${boardStatData?.RB?.length || 0} Boards \n${boardStatData?.RB || ""}">بورد خام</a>`)
+        const enode3 = editor.addNode('node3', 1, 2, 500, 250, 'bnode', {}, `<a href="flow_details/${selected_project}/board_pd" title="${boardStatData?.PD?.length || 0} Boards \n${boardStatData?.PD || ""}">دریافت قطعات از انبار</a>`)
+        const enode4 = editor.addNode('node4', 1, 1, 800, 200, 'bnode', {}, `<a href="flow_details/${selected_project}/board_ca" title="${boardStatData?.CA?.length || 0} Boards \n${boardStatData?.CA || ""}">مونتاژ کامل</a>`)
+        const enode5 = editor.addNode('node4', 1, 1, 700, 300, 'bnode', {}, `<a href="flow_details/${selected_project}/board_pa" title="${boardStatData?.PA?.length || 0} Boards \n${boardStatData?.PA || ""}">مونتاژ ناقص</a>`)
+        const enode6 = editor.addNode('node4', 1, 1, 900, 300, 'bnode', {}, `<a href="flow_details/${selected_project}/board_tk" title="${boardStatData?.TK?.length || 0} Boards \n${boardStatData?.TK || ""}">تکمیل مونتاژ</a>`)
+        const enode7 = editor.addNode('node4', 2, 1, 1100, 250, 'bnode', {}, `<a href="flow_details/${selected_project}/board_ss" title="${boardStatData?.SS?.length || 0} Boards \n${boardStatData?.SS || ""}">QC شست و شو و</a>`)
+        const enode8 = editor.addNode('node4', 1, 1, 1300, 250, 'bnode', {}, `<a href="flow_details/${selected_project}/board_qc" title="${boardStatData?.QC?.length || 0} Boards \n${boardStatData?.QC || ""}">QC تحویل به</a>`)
+
+        const qnode1 = editor.addNode('node1', 1, 1, 100, 450, 'pnode', {}, `<a href="flow_details/${selected_project}/board_qc" title="${boardStatData?.QC?.length || 0} Boards \n${boardStatData?.QC || ""}">دریافت بورد</a>`)
+        const qnode2 = editor.addNode('node1', 1, 1, 300, 450, 'pnode', {}, `<a href="flow_details/${selected_project}/board_op" title="${boardStatData?.OP?.length || 0} Boards \n${boardStatData?.OP || ""}">تحویل به اپرانور</a>`)
+        const qnode3 = editor.addNode('node1', 1, 1, 500, 450, 'pnode', {}, `<a href="flow_details/${selected_project}/board_sps" title="${boardStatData?.SPS?.length || 0} Boards \n${boardStatData?.SPS || ""}">ارسال به سپهر</a>`)
+        const qnode4 = editor.addNode('node1', 1, 1, 700, 450, 'pnode', {}, `<a href="flow_details/${selected_project}/board_spr" title="${boardStatData?.SPR?.length || 0} Boards \n${boardStatData?.SPR || ""}">تحویل از سپهر</a>`)
+        const qnode5 = editor.addNode('node1', 1, 1, 900, 450, 'pnode', {}, `<a href="flow_details/${selected_project}/board_as" title="${boardStatData?.AS?.length || 0} Boards \n${boardStatData?.AS || ""}">تحویل به اسمبلی</a>`)
+
+        const anode1 = editor.addNode('node1', 1, 1, 100, 700, 'rnode', {}, `<a href="elec_parts" title="${boardStatData?.AS?.length || 0} Boards \n${boardStatData?.AS || ""}">دریافت بورد</a>`)
+        const anode2 = editor.addNode('node1', 1, 1, 100, 600, 'rnode', {}, `<a href="mech_parts" title="${partStatData?.ASM?.length || 0} Parts \n${partStatData?.ASM || ""}">دریافت قطعه</a>`)
+        const anode3 = editor.addNode('node1', 2, 1, 300, 650, 'rnode', {}, `<a href="all_products" title="${productData.length || 0} Products \n${productData || ""}">اسمبل نهایی</a>`)
+
+        editor.addConnection(enode1, enode2, 'output_1', 'input_1')
+        editor.addConnection(enode2, enode3, 'output_1', 'input_1')
+        editor.addConnection(enode3, enode4, 'output_1', 'input_1')
+        editor.addConnection(enode3, enode5, 'output_2', 'input_1')
+        editor.addConnection(enode5, enode6, 'output_1', 'input_1')
+        editor.addConnection(enode4, enode7, 'output_1', 'input_1')
+        editor.addConnection(enode6, enode7, 'output_1', 'input_2')
+        editor.addConnection(enode7, enode8, 'output_1', 'input_1')
+
+        editor.addConnection(qnode1, qnode2, 'output_1', 'input_1')
+        editor.addConnection(qnode2, qnode3, 'output_1', 'input_1')
+        editor.addConnection(qnode3, qnode4, 'output_1', 'input_1')
+        editor.addConnection(qnode4, qnode5, 'output_1', 'input_1')
+
+        editor.addConnection(mnode1, mnode2, 'output_1', 'input_1')
+        editor.addConnection(mnode2, mnode3, 'output_1', 'input_1')
+        editor.addConnection(mnode3, mnode4, 'output_1', 'input_1')
+        editor.addConnection(mnode4, mnode5, 'output_1', 'input_1')
+        editor.addConnection(mnode5, mnode6, 'output_1', 'input_1')
+        editor.addConnection(mnode6, mnode7, 'output_1', 'input_1')
+
+        editor.addConnection(anode1, anode3, 'output_1', 'input_2')
+        editor.addConnection(anode2, anode3, 'output_1', 'input_1')
+    </script>   
+
+</body>
+
+</html>

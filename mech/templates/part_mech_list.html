@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Part Models</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Parts</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Title</th>
+                    <th>Part ID</th>
+                    <th>Version</th>
+                    <th>File</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for part in parts %}
+                    <tr>
+                        <td>{{ part.project_name.name }}</td>
+                        <td>{{ part.title }}</td>
+                        <td>M{{ part.name }}</td>
+                        <td>V{{ part.version }}</td>
+                        <td>-</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

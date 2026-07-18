@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pallet List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/palet_list.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Pallet List</h1>
+        <h1>{{ palets.first.palet_set.first.bom.board.project_name.name }} {{ palets.first.palet_set.first.bom.board.title }} V{{ palets.first.palet_set.first.bom.board.version }}</h1>
+    </div>
+    {% if my_req.status == 'PND' %}
+    <div style="margin-left:220px;">
+        <form method="post" action="{% url 'panel_anbardar_acc' my_req.id %}">
+            {% csrf_token %}
+            <button class='btn2', type="submit" name="action" value="button1">Accept</button>
+            <button class='btn1', type="submit" name="action" value="button2">Reject</button>
+        </form>
+    </div>
+    {% endif %}
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Pallet number</th>
+                    <th>Anbar Code</th>
+                    <th>Quantity</th>
+                    <th>Order Number</th>
+                    <th>Part Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pallet in palets %}
+                    <tr>
+                        <td>{{ pallet.number }}</td>
+                        <td>{{ pallet.palet_set.first.part.pk }}</td>
+                        <td>{{ pallet.cal_qnt }}</td>
+                        <td>{{ pallet.palet_set.first.part.order.order_number }}</td>
+                        <td>{{ pallet.palet_set.first.part.part_number }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No pallet found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if my_req.status == 'ACC' %}
+        <h1>Kasri</h1>
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>index</th>
+                    <th>Quantity</th>
+                    <th>Part Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pn, cnt in kasri.items %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ cnt }}</td>
+                        <td>{{ pn }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No pallet found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        <h1>Rejected Parts</h1>
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Part Number</th>
+                    <th>Required</th>
+                    <th>Inventory</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pallet in rej %}
+                    <tr>
+                        <td>{{ pallet.part_number }}</td>
+                        <td>{{ pallet.bom_total }}</td>
+                        <td>{{ pallet.part_total }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No pallet found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

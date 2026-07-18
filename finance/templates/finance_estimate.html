@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Options</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/finance_estimate.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+
+</head>
+<body>
+    {% include "partials/_sidebar_finance.html" %}
+    <h1 style="margin-left: 220px;">Select Your Options</h1>
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('projectPanel')">project</button>
+                <div id="projectPanel" class="panel">
+                    {% for project in projects %}
+                        <label>
+                            <input type="radio" name="project" value="{{ project.id }}"> {{ project.name }}
+                        </label><br>
+                    {% endfor %}
+                </div>
+            </div>
+            <script>
+                const allBoards = {{ boards_json|safe }};
+            </script>
+              
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('namePanel')">board name</button>
+                <div id="namePanel" class="panel">
+
+                </div>
+            </div>
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('boardPanel')">Version</button>
+                <div id="boardPanel" class="panel">
+
+                </div>
+            </div>
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('orderPanel')">Order</button>
+                <div id="orderPanel" class="panel">
+                    <label>
+                        <input type="checkbox" id="selectAllOrders" onclick="toggleSelectAll(this)"> Select All
+                    </label><br>
+            
+                    {% for order in orders %}
+                        <label>
+                            <input type="checkbox" class="order-checkbox" name="order" value="{{ order.id }}"> {{ order.order_number }}
+                        </label><br>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="section">
+                    <label>
+                        <input type="number" style="background-color: #ffe5cc; border: 0px; padding: 7px 5px;" placeholder="Quantity" name="quantity"> 
+                    </label><br>
+            </div>
+            <button type="submit" class="btn">Submit</button>
+        </div>
+    </form>
+    <script src="{% static 'js/finance_estimate.js' %}"></script>  
+</body>
+</html>

@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Part List</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_finance.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pageination.css' %}">
+  <link rel="stylesheet" href="{% static 'css/search_sort.css' %}">
+  <script src="{% static 'js/sidebar.js' %}"></script>
+  <script src="{% static 'js/table_adjust.js' %}"></script>
+  <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+  {% include "partials/_sidebar_finance.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Part List</h1>
+        <form method="get">
+            <input class="search" type="text" name="CA" placeholder="code anbar" value="{{ query1|default_if_none:'' }}">
+            <input class="search" type="text" name="PN" placeholder="part number" value="{{ query3|default_if_none:'' }}">
+            <input class="search" type="text" name="ON" placeholder="order number" value="{{ query2|default_if_none:'' }}">
+            <button class="search" type="submit">Search</button>
+        </form>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th data-column="order_number">Order Number</th>
+                    <th data-column="part_number">Part Number</th>
+                    <th data-column="part_type">Part Type</th>
+                    <th data-column="count">Quantity</th>
+                    <th data-column="count">Ordered</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for part in parts %}
+                <tr>
+                    <td>{{ part.order.order_number }}</td>
+                    <td>{{ part.part_number }}</td>
+                    <td>{{ part.get_part_type_display }}</td>
+                    <td>{{ part.count }}</td>
+                    <td>{{ part.ordered }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">No parts available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <nav>
+        <ul class="pagination">
+          {% if parts.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1&CA={{ query1 }}&ON={{ query2 }}&PN={{ query3 }}">&laquo;</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ parts.previous_page_number }}&CA={{ query1 }}&ON={{ query2 }}&PN={{ query3 }}">Previous</a>
+            </li>
+          {% endif %}
+    
+          <li class="page-item disabled">
+            <span class="page-link">
+              Page {{ parts.number }} of {{ parts.paginator.num_pages }}
+            </span>
+          </li>
+    
+          {% if parts.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ parts.next_page_number }}&CA={{ query1 }}&ON={{ query2 }}&PN={{ query3 }}">Next</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ parts.paginator.num_pages }}&CA={{ query1 }}&ON={{ query2 }}&PN={{ query3 }}">&raquo;</a>
+            </li>
+          {% endif %}
+        </ul>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Insufficient parts</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/finance_deflicts.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_finance.html" %}
+    {% if message %}
+        <div style="margin-left:220px;">
+            <h1>{{ message }}</h1>
+        </div>
+    {% else %}
+    <div style="margin-left:220px;">
+        <h1>insufficient parts</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Part Number</th>
+                    <th>Deflict</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plt in palets %}
+                    <tr>
+                        <td>{{ plt.part_number }}</td>
+                        <td>{{ plt.quantity }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="2">No Part found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="button-group">
+            <form action="{% url 'finance_acc'%}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button class="btn1" type="submit" name="rej" value="{{ req.pk }}">Return</button>      
+                <button class="btn2" type="submit" name="acc" value="{{ req.pk }}">Accept</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>

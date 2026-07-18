@@ -1,0 +1,49 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add BOM</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/project_add.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+</head>
+</head>
+    <body>
+    {% include "partials/_sidebar.html" %}
+
+        <div class="container">
+            <h1>New Project</h1>
+            <form method="post" enctype="multipart/form-data" id="upload-form">
+                {% csrf_token %}
+                <label>Project Name</label>
+                <select name="projectname" required>
+                    <option disabled selected>Select Project</option>
+                    {% for proj in projects %}
+                        <option value="{{ proj.name }}">{{ proj.name }}</option>
+                    {% endfor %}
+                </select>
+                <label>Board Name</label>
+                <input type="text" name="boardname" required>
+
+                <label>Board ID</label>
+                <input type="text" name="id" id="idInput"  maxlength="4" required>
+
+                <label>Version</label>
+                <input type="text" name="version"  maxlength="3" id="versionInput" required>
+
+                <label>Upload BOM (.xls/.xlsx)</label><br>
+                <a href="/anbar/download-bom-template" class="greenbtn">Download Template</a><br>
+                <label for="file-upload" class="custom-file-upload">Choose File</label>
+                <span id="file-name" style="margin-left: 10px;">No file chosen</span><br>
+                <input id="file-upload" type="file" name="file" accept=".xls,.xlsx" required style="margin:20px 0px;">
+                {% if error %}
+                <p style="color: red; text-align: center;">{{ error }}</p>
+                {% endif %}
+                <button type="submit">Save</button>
+            </form>
+        </div>
+        <script src="{% static 'js/project_add.js' %}"></script>
+    </body>
+</html>

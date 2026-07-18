@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Raw Board Request</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/darkhast.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    <h1 style="margin-left: 220px;">Select Your Options</h1>
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('projectPanel')">project</button>
+                <div id="projectPanel" class="panel">
+                    {% for project in projects %}
+                        <label>
+                            <input type="radio" name="project" value="{{ project.id }}"> {{ project.name }}
+                        </label><br>
+                    {% endfor %}
+                </div>
+            </div>
+            <script>
+                const allBoards = {{ boards_json|safe }};
+            </script>
+              
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('namePanel')">board name</button>
+                <div id="namePanel" class="panel">
+
+                </div>
+            </div>
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('boardPanel')">Board ID</button>
+                <div id="boardPanel" class="panel">
+                    <label>
+                        <input type="checkbox" id="selectAllBoards" onclick="toggleSelectAllBoards(this)"> Select All
+                    </label><br>
+                </div>
+            </div>
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('orderPanel')">Order</button>
+                <div id="orderPanel" class="panel">
+                    <label>
+                        <input type="checkbox" id="selectAllOrders" onclick="toggleSelectAll(this)"> Select All
+                    </label><br>
+            
+                    {% for order in orders %}
+                        <label>
+                            <input type="checkbox" class="order-checkbox" name="order" value="{{ order }}"> {{ order }}
+                        </label><br>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('userPanel')">Assembler</button>
+                <div id="userPanel" class="panel">
+                    {% for user in users %}
+                        <label>
+                            <input type="radio" name="user" value="{{ user.id }}" required> {{ user.username }}
+                        </label><br>
+                    {% endfor %}
+                </div>
+            </div>
+            <button type="submit" class="btn" >Submit</button>
+        </div>
+    </form>
+    <script src="{% static 'js/darkhast.js' %}"></script>  
+</body>
+</html>

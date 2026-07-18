@@ -1,0 +1,47 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Part Model</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/part_mech_add.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+
+</head>
+    <body>
+    {% include "partials/_sidebar_mech.html" %}
+
+        <div class="container">
+            <h1>New Part</h1>
+            <form method="post" enctype="multipart/form-data" id="upload-form">
+                {% csrf_token %}
+                <label>Project Name</label>
+                <input type="text" name="projectname" required>
+                <label>Part Name</label>
+                <input type="text" name="partname" required>
+                <label>Part ID</label>
+                <input type="text" name="id" id="idInput"  maxlength="4" required>
+                <label>Version</label>
+                <input type="text" name="version"  maxlength="3" id="versionInput" required>
+
+                <label>Upload Step File (.stp/.step)</label><br>
+                <input type="file" name="step" accept=".stp,.step" style="margin:20px 0px;"><br>
+
+                <label>Upload QCP File (.docx)</label><br>
+                <input type="file" name="qcp" accept=".docx" style="margin:20px 0px;"><br>
+
+                <label>Upload PM File (.nc/.cnc)</label><br>
+                <input type="file" name="pm" accept=".nc,.cnc" style="margin:20px 0px;"><br>
+                {% if error %}
+                <p style="color: red; text-align: center;">{{ error }}</p>
+                {% endif %}
+                <button type="submit">Save</button>
+            </form>
+        </div>
+        <script src="{% static 'js/part_mech_add.js' %}"></script>      
+    </body>
+</html>

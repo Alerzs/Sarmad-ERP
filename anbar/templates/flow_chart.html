@@ -1,0 +1,103 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Rectangular Nodes + Visible Arrowheads</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 0; padding: 16px; }
+    svg { background:#fff; border:1px solid #eee; border-radius:12px; }
+    .edge { stroke:#888; stroke-width:2; fill:none; }
+    .node-rect { fill:#cfe9ff; stroke:#333; stroke-width:2; }
+    .node-label { font-size:14px; fill:#111; pointer-events:none; }
+    a { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Arrows on Rectangles (backend-shaped links)</h2>
+  <svg id="diagram" width="720" height="420"></svg>
+
+  <script src="{% static 'js/d3.v7.min.js' %}"></script>
+  <script>
+    const nodes = {{ nodes_json|safe }};
+    const links = {{ links_json|safe }};
+
+    const svg = d3.select("#diagram");
+
+    svg.append("defs").append("marker")
+      .attr("id", "arrowhead")
+      .attr("viewBox", "0 -5 10 10")
+      .attr("refX", 10)
+      .attr("refY", 0)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto")
+      .append("path")
+      .attr("d", "M0,-5L10,0L0,5")
+      .attr("fill", "#888");
+
+    const gNodes = svg.append("g").attr("class", "nodes");
+
+    const gEdges = svg.append("g").attr("class", "edges");
+
+    const NODE_W = 120;
+    const NODE_H = 44;
+
+    const byId = Object.fromEntries(nodes.map(n => [n.id, n]));
+
+    const nodeLink = gNodes.selectAll(".node-link")
+      .data(nodes, d => d.id)
+      .enter()
+      .append("a")
+      .attr("class", "node-link")
+      .attr("href", d => d.url)
+      .attr("xlink:href", d => d.url);
+
+    nodeLink.append("rect")
+      .attr("class", "node-rect")
+      .attr("x", d => d.x - NODE_W / 2)
+      .attr("y", d => d.y - NODE_H / 2)
+      .attr("width", NODE_W)
+      .attr("height", NODE_H)
+      .attr("rx", 8)
+      .attr("ry", 8);
+
+    nodeLink.append("text")
+      .attr("class", "node-label")
+      .attr("x", d => d.x)
+      .attr("y", d => d.y)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .text(d => d.id);
+
+    function rectBorderPoint(cx, cy, towardX, towardY, w, h) {
+      const dx = towardX - cx;
+      const dy = towardY - cy;
+      if (dx === 0 && dy === 0) return { x: cx, y: cy };
+      const hw = w / 2;
+      const hh = h / 2;
+      const scale = 1 / Math.max(Math.abs(dx) / hw, Math.abs(dy) / hh);
+      return { x: cx + dx * scale, y: cy + dy * scale };
+    }
+
+    function edgePath(s, t, link) {
+      const p1 = rectBorderPoint(s.x, s.y, t.x, t.y, NODE_W, NODE_H);
+      const p2 = rectBorderPoint(t.x, t.y, s.x, s.y, NODE_W, NODE_H);
+
+      if (link.shape === "curve" && link.cx != null && link.cy != null) {
+        return `M${p1.x},${p1.y} Q${link.cx},${link.cy} ${p2.x},${p2.y}`;
+      }
+      return `M${p1.x},${p1.y} L${p2.x},${p2.y}`;
+    }
+
+    gEdges.selectAll(".edge")
+      .data(links, d => d.id)
+      .enter()
+      .append("path")
+      .attr("class", "edge")
+      .attr("d", d => edgePath(byId[d.source], byId[d.target], d))
+      .attr("marker-end", "url(#arrowhead)");
+  </script>
+</body>
+</html>

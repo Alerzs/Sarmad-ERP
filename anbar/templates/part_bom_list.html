@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Part List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/part_bom_list.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>BOM Parts List</h1>
+
+    </div>
+    <div style="margin-left: 220px;">
+      <table id="resizable-table">
+          <thead>
+              <tr>
+                  <th data-field="code_anbar">Code Anbar</th>
+                  <th data-field="part_number">Part Number</th>
+                  <th data-field="order_number">Order Number</th>
+                  <th data-field="failure">Status</th>
+                  <th data-field="designator">Designator</th>
+                  <th data-field="name">Name</th>
+                  <th data-field="project">Project</th>
+
+              </tr>
+          </thead>
+          <tbody>
+              {% for part in parts %}
+              <tr>
+                  <td>{{ part.code_anbar }}</td>
+                  <td>{{ part.part_number }}</td>
+                  <td>{{ part.order_number }}</td>
+                  <td>{{ part.failure }}</td>
+                  <td>{{ part.designators }}</td>
+                  <td>{{ part.board }}</td>
+                  <td>{{ part.project }}</td>
+                  
+              </tr>
+              {% empty %}
+              <tr>
+                  <td colspan="8">No parts available.</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+    <div id="pagination" style="margin-top: 10px; text-align: center; font-family: sans-serif;"></div>
+    <script src="{% static 'js/part_bom_list.js' %}"></script>  
+</body>
+</html>

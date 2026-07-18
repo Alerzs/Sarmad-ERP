@@ -1,0 +1,22 @@
+.inner-table table{
+            width: 80%;
+            margin: 0 auto;
+        }
+        .inner-table {
+        display: none;
+        }
+        .butt{
+          text-decoration: none;
+          padding: 10px 15px;
+          background-color: #8f210e;
+          border: 1px solid #4b0f05;
+          color: white;
+          border-radius: 6px;
+          font-size: 15px;
+        }
+        .butt:hover{
+          opacity: 0.7;
+        }
+        button{
+          padding: 0;
+        }

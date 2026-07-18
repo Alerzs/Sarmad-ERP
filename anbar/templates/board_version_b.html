@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Board List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>{{ Project }}</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr id="header-row">
+                  <th>Title</th>
+                  <th>Version</th>
+                </tr>
+              </thead>
+            <tbody>
+                {% for board in boards %}
+                    <tr>
+                        <td>{{ board.title }}</td>
+                        <td><a href="{{ board.title }}/{{ board.version }}">{{ board.version }}</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3">No boards found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

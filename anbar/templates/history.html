@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>History List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pageination.css' %}">
+    <link rel="stylesheet" href="{% static 'css/history.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+
+</head>
+    
+
+<body>
+  {% include "partials/_sidebar.html" %}
+  <div style="margin-left: 220px; padding: 20px;">
+    <form method="GET" action="" class="search-form">
+      <div>
+        <label for="code_anbar">Code Anbar:</label>
+        <input type="text" name="code_anbar" id="code_anbar" value="{{ code_anbar_query }}">
+      </div>
+  
+      <div>
+        <label for="request_id">Request ID:</label>
+        <input type="text" name="request_id" id="request_id" value="{{ request_id_query }}">
+      </div>
+  
+      <button type="submit">Search</button>
+    </form>
+
+    <a href="/anbar/export_excel_logs" class="export">Expor Excel</a>
+
+  </div>
+  <div style="margin-left: 220px;">
+
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Code Anbar</th>
+          <th>Part Number</th>
+          <th>Timestamp</th>
+          <th>Request ID</th>
+          <th>Changed By</th>
+          <th>Changes</th>
+        </tr>
+      </thead>
+      {% if page_obj %}
+
+    <tbody>
+      {% for item in page_obj %}
+        {% for change in item.changes %}
+          <tr>
+            <td>{{ item.object.id }}</td>
+            <td>{{ item.object.part_number }}</td>
+            <td>{{ change.history_instance.history_date }}</td>
+            <td>{{ item.object.changed_request }}</td>
+            <td>{{ change.history_instance.history_user.username|default:"System" }}</td>
+            <td>
+              <ul>
+                {% for c in change.changes.changes %}
+                  <li>{{ c.field }}: {{ c.old }} → {{ c.new }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No history changes available.</p>
+{% endif %}
+  </div>
+
+  <nav>
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a href="?page=1&code_anbar={{ code_anbar_query }}&request_id={{ request_id_query }}">
+            &laquo; first
+          </a>
+        </li>
+        <li class="page-item">
+          <a href="?page={{ page_obj.previous_page_number }}&code_anbar={{ code_anbar_query }}&request_id={{ request_id_query }}">
+            previous
+          </a>
+        </li>
+      {% endif %}
+  
+      <li class="page-item disabled">
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+      </li>
+  
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a href="?page={{ page_obj.next_page_number }}&code_anbar={{ code_anbar_query }}&request_id={{ request_id_query }}">
+            next
+          </a>
+        </li>
+        <li class="page-item">
+          <a href="?page={{ page_obj.paginator.num_pages }}&code_anbar={{ code_anbar_query }}&request_id={{ request_id_query }}">
+            last &raquo;
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</body>
+</html>

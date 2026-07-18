@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/all_products_as.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_assembly.html" %}
+
+    <div style="margin-left: 220px;">
+        <h1>All Products </h1>
+    <table id="resizable-table">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Product Number</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{product.project}}</td>
+                <td>
+                    <a href="{{product.pk}}">{{product.productnumber}}</a>
+                </td>
+                <td>
+                    <form method="get" action="{% url 'edit_product' product.pk %}">
+                        <button style="cursor: pointer; border: none; background: none;">
+                            <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.56078 20.2501L20.5608 8.25011L15.7501 3.43945L3.75012 15.4395V20.2501H8.56078ZM15.7501 5.56077L18.4395 8.25011L16.5001 10.1895L13.8108 7.50013L15.7501 5.56077ZM12.7501 8.56079L15.4395 11.2501L7.93946 18.7501H5.25012L5.25012 16.0608L12.7501 8.56079Z" fill="black"/>
+                            </svg>
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" onsubmit="return confirmSubmit();">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{product.pk}}">
+                        <button style="cursor: pointer; border: none; background: none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 448 512" fill="black" style="pointer-events: none;">
+                                <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No Product found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align: center;">
+        <a class="ret_btn" href="/assembly/create_product/" style="text-decoration: none;">Return</a>
+    </div>
+    </div>
+    <script>
+        function confirmSubmit() {
+            return confirm("Are you sure to delete Product ?")
+        }
+    </script>
+</body>
+
+</html>

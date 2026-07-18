@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compeletion Request</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/darkhast_completion.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Board List</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr id="header-row">
+                  <th data-field="project">Project</th>
+                  <th data-field="title">Title</th>
+                </tr>
+              </thead>
+            <tbody>
+                {% for board in boards %}
+                    <tr>
+                        <td>{{ board.project_name__name }}</td>
+                        <td><a href="{{ board.project_name__name }}/{{ board.title }}">{{ board.title }}</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">No boards found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="pagination" style="margin-top: 10px; text-align: center; font-family: sans-serif;"></div>
+    <script src="{% static 'js/darkhast_completion.js' %}"></script> 
+</body>
+</html>

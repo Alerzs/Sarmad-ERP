@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All BOMs</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Board List</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <form method="post">
+            {% csrf_token %}
+        <table id="resizable-table">
+            <thead>
+                <tr id="header-row">
+                  <th data-field="project">Project</th>
+                  <th data-field="title">Title</th>
+                  <th>Version</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+            <tbody>
+                {% for board in boards %}
+                    <tr>
+                        <td>{{ board.project_name__name }}</td>
+                        <td>{{ board.title }}</td>
+                        <td><a href="{{ board.version }}">{{ board.version }}</a></td>
+                        <td>
+                            <button type="submit" value="{{ board.version }}" name="Delete" style="background: none; border: none; cursor: pointer;"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 448 512" fill="currentColor" style="pointer-events: none;">
+                                    <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">No boards found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </form>
+        {% if error %}
+        <script>
+            window.onload = function() {
+                alert("{{ error|escapejs }}");
+            };
+        </script>
+        {% endif %}
+    </div>
+
+</body>
+</html>

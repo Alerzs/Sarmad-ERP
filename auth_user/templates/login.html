@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ورود</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+    <form method="post">
+        <h2>خوش آمدید</h2>
+        {% csrf_token %}
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
+        <label for="username">نام کاربری:</label>
+        <input type="text" name="username" required>
+
+        <label for="password">گذرواژه:</label>
+        <input type="password" name="password" required>
+
+        <button type="submit">ورود</button>
+    </form>
+</body>
+</html>

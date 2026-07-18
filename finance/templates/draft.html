@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drafts</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/draft.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_finance.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Drafts</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <div class="second-table deactive">
+            <h2 style="display: flex; justify-content: center;">New Order</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>PartNumber</th>
+                        <th>Quantity</th>
+                        <th>Project</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <form method="post" class="orange-form">
+                                {% csrf_token %}
+                                <label for="ordername">Order Name: </label>
+                                <input type="text" id="ordername" name="ordername" required>
+                                <label for="vendor" style="margin-left: 15px;">Vendor: </label>
+                                <input type="text" id="vendor" name="vendor" required>
+                                <input type="hidden" name="paletids" id="paletids">
+                                <button type="button" class="createorder" onclick="sendData(event)">Create</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th data-field="part_number">PartNumber</th>
+                    <th data-field="status">Status</th>
+                    <th data-field="quantity">Quantity</th>
+                    <th data-field="board">Board</th>
+                    <th data-field="sets">Sets</th>
+                    <th data-field="project">Project</th>
+                    <th data-field="description">Description</th>
+                    <th>Edit</th>
+                    <th>Add</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plt in palets %}
+                    <tr data-id="{{ plt.id }}"
+                    {% if plt.status == 'AC' %}
+                        class="status-ac"
+                    {% elif plt.status == 'RJ' %}
+                        class="status-rj"
+                    {% elif plt.status == 'NA' %}
+                        class="status-na"
+                    {% elif plt.status == 'CN' %}
+                        class="status-cn"
+                    {% else %}
+                        class="status-nd"
+                    {% endif %}
+                    >    
+                        <td>{{ plt.part_number }}</td>
+                        <td>{{ plt.get_status_display }}</td>
+                        <td>{{ plt.quantity }}</td>
+                        {% if plt.req.board.title %}
+                            <td>{{ plt.req.board.title }}-V{{ plt.req.board.version }}</td>
+                        {% else %}
+                            <td>-</td>
+                        {% endif %}
+                        <td>{{ plt.req.sets|default:'-' }}</td>
+                        <td>{{ plt.req.board.project_name.name|default:'-' }}</td>
+                        <td>{{ plt.description }}</td>
+                        <td>
+                            <button class="edit-btn" style="background: none; border: none; cursor: pointer;">
+                              <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20" fill="currentColor" style="pointer-events: none;">
+                                <path d="M2 14.5V18h3.5L17 6.5l-3.5-3.5L2 14.5zM19.71 4.04a1.003 1.003 0 0 0 0-1.41L17.37.29a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.5 3.5 1.83-1.83z"/>
+                              </svg>
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" style="background: none; border: none; cursor: pointer;" class="add-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" style="pointer-events: none;">
+                                    <path d="M12 5v14M5 12h14" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </td>
+                        
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="8">No Part found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="pagination" style="margin-top: 10px; text-align: center; font-family: sans-serif;"></div>
+    <script src="{% static 'js/draft.js' %}"></script>       
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Part Assembly</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_assembly.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_assembly.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Part Assembly</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr id="header-row">
+                  <th>Index</th>
+                  <th>Project</th>
+                  <th>Title</th>
+                  <th>Part Serial</th>
+                </tr>
+              </thead>
+            <tbody>
+                {% for part in parts %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ part.project_name.name }}</td>
+                        <td>{{ part.title }}</td>
+                        <td>{{ part.part_number }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7">No part found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>

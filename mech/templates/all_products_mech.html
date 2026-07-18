@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Products</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left: 220px;">
+        <h1>All Products </h1>
+    <table id="resizable-table">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Product Number</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{product.project}}</td>
+                <td>
+                    <a href="{{product.pk}}">{{product.productnumber}}</a>
+                </td>
+                <td>
+                    <form method="post" onsubmit="return confirmSubmit();">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{product.pk}}">
+                        <button style="cursor: pointer; border: none; background: none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 448 512" fill="currentColor" style="pointer-events: none;">
+                                <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No part found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>    
+    <a class="greenbutton" href="/mech/add_product/" style="text-decoration: none;">Return</a>
+    </div>
+    <script>
+        function confirmSubmit() {
+            return confirm("Are you sure to delete Product ?")
+        }
+    </script>
+</body>
+
+</html>

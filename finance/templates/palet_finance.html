@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Part List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_finance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_finance.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_finance.html" %}
+    
+    <div style="margin-left:235px;">
+        <h1>Parts</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Part Number</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pallet in palets %}
+                    <tr>
+                        <td>{{ pallet.part_number }}</td>
+                        <td>{{ pallet.quantity }}</td>
+                        <td> - </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No pallet found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function togglePanel(id) {
+            const panel = document.getElementById(id);
+            panel.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

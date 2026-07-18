@@ -1,0 +1,45 @@
+.form-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    margin-left: 220px;
+}
+.section {
+border: 1px solid #ccc;
+padding: 10px;
+min-width: 150px;
+background-color: #d6ebff;
+border-radius: 8px;
+}
+.panel {
+    display: none;
+    margin-top: 10px;
+}
+.active {
+    display: block;
+}
+.toggle-btn {
+    cursor: pointer;
+    padding: 8px;
+    border: none;
+    width: 100%;
+    background-color: #d6ebff;
+    text-align: left;
+    font-weight: bold;
+}
+.btn[type="submit"] {
+    height: 40px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    color: snow;
+    background-color: #007bff;
+    align-self: flex-start;
+    border-radius: 8px;
+    padding: 0 20px;
+    transition: background-color 0.3s ease, box-shadow 0.1s ease;
+}
+.btn:hover {
+    background-color: #0056b3;
+    color: #ccc;
+}

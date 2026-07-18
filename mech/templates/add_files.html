@@ -1,0 +1,63 @@
+{% load static %}
+{% load custom_filter %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>part List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/add_files.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Parts</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Title</th>
+                    <th>Part Serial</th>
+                    <th>Version</th>
+                    <th>QCP</th>
+                    <th>PowerMill</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for part in parts %}
+                    <tr class="part-row">
+                        <td>{{ part.project_name__name }}</td>
+                        <td>{{ part.title }}</td>
+                        <td>{{ part.name }}</td>
+                        <td>{{ part.version }}</td>
+                        <td>
+                            <form action="{% url 'save_file_mech' %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="type" value="PM">
+                                <input type="hidden" name="part_id" value="{{ part.pk }}">
+                                <input type="file" name="file">
+                            </form>
+                        </td>
+                        <td>
+                            <form action="{% url 'save_file_mech' %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="type" value="PM">
+                                <input type="hidden" name="part_id" value="{{ part.pk }}">
+                                <input type="file" name="file">
+                            </form>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

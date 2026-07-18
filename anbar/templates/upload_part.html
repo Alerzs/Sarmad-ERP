@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Part</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/upload_part.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+</head>
+    <body>
+    {% include "partials/_sidebar.html" %}
+
+        <div class="container">
+            <h1>Add Part</h1>
+            <form method="post" enctype="multipart/form-data" id="upload-form">
+                {% csrf_token %}
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label>New Order Name</label>
+                        <input type="text" name="new_order">
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label>Previous Orders</label>
+                        <select name="old_order" style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 6px;">
+                            {% for order in orders %}
+                              <option value="{{ order.order_number }}">{{ order.order_number }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <a href="/anbar/download-part-template/" class="download-button">
+                    Download Parts Template
+                </a><br>
+
+                <label for="file-upload" class="custom-file-upload">
+                    Choose File
+                </label>
+                <span id="file-name" style="margin-left: 10px;">No file chosen</span><br>
+                <input id="file-upload" type="file" name="file" accept=".xls,.xlsx" required>
+            
+                {% if error %}
+                <p style="color: red; text-align: center;">{{ error }}</p>
+                {% endif %}
+                <button type="submit">Save</button>
+            </form>
+        </div>
+        <script>
+            document.getElementById("file-upload").addEventListener("change", function () {
+                const fileName = this.files[0] ? this.files[0].name : "No file chosen";
+                document.getElementById("file-name").textContent = fileName;
+            });
+        </script>
+    </body>
+</html>

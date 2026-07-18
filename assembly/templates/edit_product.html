@@ -1,0 +1,87 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/edit_product.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+
+</head>
+<body>
+    {% include "partials/_sidebar_assembly.html" %}
+
+    <div style="margin-left: 220px;">
+    <h1>{{thisproject}} Tree</h1>
+
+    <div style="display: flex;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Quantity</th>
+                    <th>Add Part</th>
+                    <th>Selected Parts</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for elec in tree %}
+                <tr data-partnumber="{{ elec.partnumber }}">
+                    <td>{{ elec.partnumber }}</td>
+                    <td class="quantity-limit">{{ elec.quantity }}</td>
+                    <td>
+                        <select class="part_select" data-mech-id="{{ mech.partnumber }}">
+                            <option disabled selected>Select Part to add</option>
+                            {% comment %} Merge rel_parts + related_parts and remove duplicates {% endcomment %}
+                            {% for board in elec.rel_parts|merge_lists:elec.current_parts %}
+                            <option value="{{ board }}">{{ board }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="selected-parts">
+                        {% for p in elec.current_parts %}
+                        <div class="content-wrapper">
+                            <p>{{ p }}</p>
+                            <button class="close-button" type="button">X</button>
+                        </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No board found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <table style="width: 20%;">
+            <thead>
+                <tr>
+                    <th style="border-left: none;">Mechanic</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border-left: none;">
+                        <select class="mech_select" required>
+                            <option disabled selected hidden>Select Mech Product</option>
+                            {% for part in mech_products %}
+                            <option value="{{ part.productnumber }}">Product {{ part.productnumber }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        
+    <form method="post" id="send_product">
+        {% csrf_token %}
+        <input type="hidden" name="project" value="{{ thisproject }}">
+        <button id="create-product" type="button">Edit Product</button>
+    </form>
+    </div>
+    <script src="{% static 'js/edit_product.js' %}"></script> 
+</body>
+</html>

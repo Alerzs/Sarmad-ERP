@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assemble Panel</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/darkhast_list_as.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Requests</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Board Name</th>
+                    <th>Sender</th>
+                    <th>Assembler</th>
+                    <th>Request Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for darkhast in darkhasts %}
+                    <tr>    
+                        <td>
+                            <a href="{{ darkhast.pk }}" class="part-link" style="text-decoration: none;">{{ darkhast.pk }}</a>
+                        </td>
+                        <td>{{ darkhast.board_id }}</td>
+                        <td>{{ darkhast.user.username }}</td>
+                        {% if is_admin %}
+                            <td>
+                                <form method="post" action="{% url 'change_assembler' darkhast.pk %}">
+                                    {% csrf_token %}
+                                    <select id="change_assembler" name="change_assembler" required onchange="this.form.submit(); alert('Changed successfully!');">
+                                        <option value="" disabled selected>{{ darkhast.for_user.username }}</option>
+                                        {% for as in assemblers%}
+                                            <option value="{{ as.id }}">{{ as.username }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </td>
+                        {% else %}
+                            <td>{{ darkhast.for_user.username }}</td>
+                        {% endif %}
+                        <td>{{ darkhast.date }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No request found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

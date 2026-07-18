@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Product</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/add_product.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left: 220px;">
+    {% if thisproject %}
+    <h1>{{thisproject}} Tree</h1>
+    {% else %}
+        <h1>All Tree</h1>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label>Select Project</label>
+        <select name="project" id="projectSelect">
+            <option selected  disabled>Please Select</option>
+            {% for project in projects %}
+                <option value="{{ project.name }}">{{ project.name }}</option>
+            {% endfor %}
+        </select> 
+    </form>
+    <table id="resizable-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Quantity</th>
+                <th>Add Part</th>
+                <th>Selected Parts</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mech in tree %}
+            <tr>
+                <td>{{ mech.partnumber }}</td>
+                <td class="quantity-limit">{{ mech.quantity }}</td>
+                <td>
+                    <select class="part_select" data-mech-id="{{ mech.partnumber }}">
+                        <option disabled selected>Select Part to add</option>
+                        {% for part in mech.rel_parts %}
+                        <option value="{{ part }}">{{ part }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td class="selected-parts"></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No part found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>    
+    <form action="{% url 'save_product' %}" method="post" id="send_product">
+        {% csrf_token %}
+        <input type="hidden" name="project" value="{{ thisproject }}">
+        <button id="create-product" class="greenbutton" type="button">Create Product</button>
+    </form>
+    </div>
+    <script src="{% static 'js/add_product.js' %}"></script> 
+</body>
+
+</html>

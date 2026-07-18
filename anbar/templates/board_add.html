@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Board</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/board_add.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    <h1 class="page-content">Select Your Options</h1>
+    {% if error %}
+        <h3 class="error-message">{{ error }} serials are already exist</h3>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('projectPanel')">Project</button>
+                <div id="projectPanel" class="panel">
+                    {% for project in projects %}
+                        <label>
+                            <input type="radio" name="project" value="{{ project.id }}"> {{ project.name }}
+                        </label><br>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('namePanel')">Board Name</button>
+                <div id="namePanel" class="panel">
+                </div>
+            </div>
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('boardPanel')">Version</button>
+                <div id="boardPanel" class="panel">
+                </div>
+            </div>
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('rangePanel')">Serial Range</button>
+                <div id="rangePanel" class="panel">
+                    <div class="range-inputs">
+                        <label>Start: 
+                            <input type="number" id="rangeStart" class="inner" max="9999">
+                        </label>
+                        <label>End: 
+                            <input type="number" id="rangeEnd" class="inner" max="9999">
+                        </label>
+                        <button type="button" onclick="generateRangeOptions()" class="innerbtn">Generate</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <button type="button" class="toggle-btn" onclick="togglePanel('rangeOptionsPanel')">Serials</button>
+                <div id="rangeOptionsPanel" class="panel"></div>
+            </div>
+
+            <button type="submit" class="btn">Submit</button>
+        </div>
+    </form>
+
+    <script id="boards-data" type="application/json">{{ boards_json }}</script>
+    <script src="{% static 'js/board_add.js' %}"></script>
+</body>
+</html>

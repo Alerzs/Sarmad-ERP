@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_assembly.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_assembly.html" %}
+
+    <div style="margin-left: 220px;">
+        <h1>{{product.project}} Product Number {{product.productnumber}}</h1>
+    <div style="display: flex;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Part</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mech in mech_packs %}
+                <tr>
+                    <td>{{ mech.part.part_number }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No part found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>    
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Board</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for board in board_packs %}
+                <tr>
+                    <td>{{ board.board.part_number }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No part found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>  
+    </div>
+    </div>
+
+</body>
+
+</html>

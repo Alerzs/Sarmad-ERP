@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/add_tree.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_assembly.html" %}
+
+    <div class="container">
+        <h1>Add Product Tree</h1>
+        <form method="post" enctype="multipart/form-data" id="upload-form">
+            {% csrf_token %}
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label>New Project Name</label>
+                    <input type="text" name="new_project">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label>Previous Project</label>
+                    <select name="old_project" style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 6px;">
+                        {% for project in projects %}
+                          <option value="{{ project.name }}">{{ project.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <a href="/assembly/download-tree-template/" class="download-button">
+                Download Template
+            </a><br>
+
+            <label for="file-upload" class="custom-file-upload">
+                Choose File
+            </label>
+            <span id="file-name" style="margin-left: 10px;">No file chosen</span><br>
+            <input id="file-upload" type="file" name="file" accept=".xls,.xlsx" required>
+        
+            {% if error %}
+            <p style="color: red; text-align: center;">{{ error }}</p>
+            {% endif %}
+            <button type="submit">Save</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById("file-upload").addEventListener("change", function () {
+            const fileName = this.files[0] ? this.files[0].name : "No file chosen";
+            document.getElementById("file-name").textContent = fileName;
+        });
+    </script>
+
+</body>
+
+</html>

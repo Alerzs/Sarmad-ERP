@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Part List</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main_finance.css' %}">
+  <link rel="stylesheet" href="{% static 'css/sidebar_finance.css' %}">
+  <link rel="stylesheet" href="{% static 'css/order.css' %}">
+  <script src="{% static 'js/sidebar.js' %}"></script>
+</head>
+<body>
+  {% include "partials/_sidebar_finance.html" %}
+    
+    <div style="margin-left: 220px;">
+        <h1>Order Report</h1>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px;">
+            <a class="btn" href="/finance/orders/{{order.pk}}" style="background-color: rgb(194, 107, 0);">Order Details</a>
+            <a class="btn" href="/finance/payment/{{order.pk}}">Payment Details</a>
+            <a class="btn" href="/finance/shipment/{{order.pk}}">Shipment Details</a>
+        </div>
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Part Number</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plt in compact %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ plt.part_number }}</td>
+                    <td>{{ plt.total }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No parts available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr style="cursor: pointer;" onclick="return expand()">
+                    <td class="footer" colspan="3"><b>ᐯ</b> More Details <b>ᐯ</b></td>
+                </tr>
+            </tfoot>
+        </table>
+        <div style="display: flex; justify-content: center; gap: 15px;">
+            <form action="/finance/export_order/{{ order.pk }}">
+                <button class="gbtn">Export</button>
+            </form> 
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %} 
+                <label class="btn" for="file_input" style="cursor: pointer;">Upload Payment Report</label>
+                <input id="file_input" type="file" name="file" accept=".xlsx" onchange="this.form.submit()" hidden>
+            </form>
+            <form action="/finance/templates/" method="post">
+                {% csrf_token %} 
+                <button class="gbtn">Template</button>
+                <input type="hidden" name="type" value="payment">
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'js/order_details.js' %}"></script> 
+</body>
+</html>

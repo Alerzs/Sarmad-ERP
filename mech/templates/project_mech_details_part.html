@@ -1,0 +1,181 @@
+{% load static %}
+{% load custom_filter %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Parts</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <style>
+        .tabhead{
+            background-color:#a3d8b9 ;
+            color:#1f5c33;
+            font-weight: bolder;
+        }
+    </style>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>{{ prj }}</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Part Serial</th>
+                    <th>Status</th>
+                    <th>Material ID</th>
+                    <th>Last State</th>
+                    <th>QCP</th>
+                    <th>Step</th>
+                    <th>PowerMill</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for part in parts %}
+                {% with part_files|get_item:part.id as files %}
+                <tr class="part-row" onclick="toggleOperations({{ part.pk }}, {{ part.material.pk }})">
+                    <td>{{ part.part_number }}</td>
+                    <td>{{ part.get_status_display }}</td>
+                    <td>{{ part.material.pk }}</td>
+                    <td>{{ part.last_op }}</td>
+                    <td>
+                        {% if files.QCP %}
+                        <form action="{% url 'open_file' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="file_path" value="C:\mech\QCP\M{{ part.name }}V{{ part.version }}S{{ part.serial }}.docx">
+                            <input type="hidden" name="rd_url" value="{{ request.path }}">
+                            <button type="submit" style="background:none; border:none; cursor:pointer;" title="Open QCP File">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20" fill="green" style="pointer-events: none;">
+                                    <path d="M2 14.5V18h3.5L17 6.5l-3.5-3.5L2 14.5zM19.71 4.04a1.003 1.003 0 0 0 0-1.41L17.37.29a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.5 3.5 1.83-1.83z"/>
+                                  </svg>
+                            </button>
+                        </form>
+                        {% else %}-{% endif %}
+                    </td>
+                    <td>
+                        {% if files.STEP %}
+                        <form action="{% url 'open_file' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="file_path" value="C:\mech\STEP\M{{ part.name }}V{{ part.version }}.STEP">
+                            <input type="hidden" name="rd_url" value="{{ request.path }}">
+                            <button type="submit" style="background:none; border:none; cursor:pointer;" title="Open STEP File">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 3V15M12 15L8 11M12 15L16 11" stroke="green" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4 19H20" stroke="green" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </form>
+                        {% else %}-{% endif %}
+                    </td>
+                    <td>
+                        {% if files.PM %}
+                        <form action="{% url 'open_file' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="file_path" value="C:\mech\PM\M{{ part.name }}V{{ part.version }}.cnc">
+                            <input type="hidden" name="rd_url" value="{{ request.path }}">
+                            <button type="submit" style="background:none; border:none; cursor:pointer;" title="Open STEP File">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 3V15M12 15L8 11M12 15L16 11" stroke="green" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4 19H20" stroke="green" stroke-width="3" stroke-linecap="round"/>
+                                </svg>  
+                            </button>                               
+                        </form>
+                        {% else %}-{% endif %}
+                    </td>
+                    {% endwith %}
+                </tr>
+
+                <tr id="combined-operations-{{ part.pk }}-{{ part.material.pk }}" style="display: none;">
+                    <td colspan="7">
+                        <div style="margin-bottom: 20px;">
+                            {% with mat_operations=operations_by_material|get_item:part.material.pk %}
+                                {% if mat_operations %}
+                                    <table class="inner-table">
+                                        <thead>
+                                            <tr>
+                                                <td colspan="5" class="tabhead">Material Operations</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Operator</th>
+                                                <th>Start</th>
+                                                <th>End</th>
+                                                <th>Duration</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for opr in mat_operations %}
+                                                <tr>
+                                                    <td>{{ opr.description }}</td>
+                                                    <td>{{ opr.operator.username }}</td>
+                                                    <td>{{ opr.start }}</td>
+                                                    <td>{{ opr.end }}</td>
+                                                    <td>{{ opr.duration }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr class="total-row">
+                                                <td colspan="4" style="text-align: right; color: #1f5c33;"><strong>Total Duration:</strong></td>
+                                                <td style="color: #1f5c33;"><strong>{{ material_duration_totals|get_item:part.material.pk }}</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                        <div>
+                            {% with part_operations=operations_by_part|get_item:part.pk %}
+                                {% if part_operations %}
+                                    <table class="inner-table">
+                                        <thead>
+                                            <tr>
+                                                <td colspan="5" class="tabhead">Part Operations</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Operator</th>
+                                                <th>Start</th>
+                                                <th>End</th>
+                                                <th>Duration</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for op in part_operations %}
+                                                <tr>
+                                                    <td>{{ op.description }}</td>
+                                                    <td>{{ op.operator.username }}</td>
+                                                    <td>{{ op.start }}</td>
+                                                    <td>{{ op.end }}</td>
+                                                    <td>{{ op.duration }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr class="total-row">
+                                                <td colspan="4" style="text-align: right; color: #1f5c33;"><strong>Total Duration:</strong></td>
+                                                <td style="color:#1f5c33 ;"><strong>{{ part_duration_totals|get_item:part.pk }}</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function toggleOperations(partId, materialId) {
+        const row = document.getElementById(`combined-operations-${partId}-${materialId}`);
+        row.style.display = (row.style.display === 'none' || row.style.display === '') ? 'table-row' : 'none';
+    }
+    </script>
+</body>
+
+</html>

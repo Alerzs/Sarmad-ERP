@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Insufficient parts</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/darkhast_bad.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    {% if message %}
+        <div style="margin-left:220px;">
+            <h1>{{ message }}</h1>
+        </div>
+    {% else %}
+    <div style="margin-left:220px;">
+        <h1>Insufficient parts</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Part Number</th>
+                    <th>Required</th>
+                    <th>inventory</th>
+                    <th>insufficient</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bom in insufficient_parts %}
+                    <tr>
+                        <td>{{ bom.part_number }}</td>
+                        <td>{{ bom.bom_total }}</td>
+                        <td>{{ bom.part_total }}</td>
+                        <td>{{ bom.difference }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No Part found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h1>Rejected parts</h1>
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Part Number</th>
+                    <th>Required</th>
+                    <th>inventory</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bom in rej %}
+                    <tr>
+                        <td>{{ bom.part_number }}</td>
+                        <td>{{ bom.bom_total }}</td>
+                        <td>{{ bom.part_total }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3">No Rejected Part found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="button-group">
+            <form action="{% url 'darkhast_acc' %}" method="post">
+                {% csrf_token %}
+                <div class="button-group">
+                    <button class="btn1" type="submit" name="action" value="return_{{ req.pk }}">Return</button>
+                    <button class="btn2" type="submit" name="action" value="accept_{{ req.pk }}">Accept</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>

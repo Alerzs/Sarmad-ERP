@@ -1,0 +1,150 @@
+{% load static %}
+{% load custom_filter %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_qc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_qc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/qc_panel_details.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_qc.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Requests</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>serial</th>
+                    <th>Project</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Files</th>
+                    <th>Add Operation</th>
+                    <th>To Sepehr</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for board in boards %}
+                <tr class="material-row" onclick="toggleOperations({{ board.pk }})">
+                    <td>{{ board.part_number }}</td>
+                    <td>{{ board.project_name.name }}</td>
+                    <td>{{ board.title }}</td>
+                    <td>{{ board.get_status_display }}</td>
+                    <td>
+                        {% if board.has_file %}
+                        <form action="{% url 'open_file_QC' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="rd_url" value="{{ request.path }}">
+                            <input type="hidden" name="file_path" value="C:\mech\QC\E{{ board.name }}V{{ board.version }}S{{ board.serial }}.docx"> 
+                            <button type="submit" style="background:none; border:none; cursor:pointer;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="purple" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                            <line x1="8" y1="13" x2="16" y2="13"/>
+                                            <line x1="8" y1="17" x2="16" y2="17"/>
+                                        <line x1="8" y1="9" x2="12" y2="9"/>
+                                    </svg>  
+                            </button>    
+                        </form>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button type="button" onclick="event.stopPropagation(); openModal({{ board.pk }})" style="background: none; border: none; cursor: pointer;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" style="pointer-events: none;">
+                                <path d="M12 5v14M5 12h14" stroke="green" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                        </button>
+                    </td>
+                    <td>
+                        {% if board.status == 'QC' %}
+                        <form action="{% url 'send_to_sepehr'%}" method="post" onsubmit="return confirmSubmit();">
+                            {% csrf_token %}
+                            <input type="hidden" name="tosepehr" value="{{board.pk}}">
+                            <input type="hidden" name="req" value="{{reqid}}">
+                            <button type="submit" style="background: none; border: none; cursor: pointer;" id="send-to-sepehr">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24" fill="royalblue" style="pointer-events: none;">
+                                <path d="M307.8 18.4c-12 5-19.8 16.6-19.8 29.6l0 80-112 0c-97.2 0-176 78.8-176 176 0 113.3 81.5 163.9 100.2 174.1 2.5 1.4 5.3 1.9 8.1 1.9 10.9 0 19.7-8.9 19.7-19.7 0-7.5-4.3-14.4-9.8-19.5-9.4-8.8-22.2-26.4-22.2-56.7 0-53 43-96 96-96l96 0 0 80c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-9.2-9.2-22.9-11.9-34.9-6.9z"/>
+                            </svg>
+                            </button>
+                        </form>
+                        {% else %}
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                         <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="darkgreen" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr id="operations-{{ board.pk }}" class="operation-details-row" style="display: none;">
+                    <td colspan="7">
+                        {% with operations=operations_by_board|get_item:board.pk %}
+                            {% if operations %}
+                                <table class="inner-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Description</th>
+                                            <th>Operator</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Duration</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for op in operations %}
+                                            <tr>
+                                                <td>{{ op.description }}</td>
+                                                <td>{{ op.operator.username }}</td>
+                                                <td>{{ op.start }}</td>
+                                                <td>{{ op.end }}</td>
+                                                <td>{{ op.duration }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <p>No operations found for this board.</p>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="operationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 style="color: black;">Create Operation</h2>
+            <form method="post" action="{% url 'panel_qc_details' reqid %}">
+                {% csrf_token %}
+                <input type="hidden" name="board_id" id="boardIdInput">
+                <label for="combo">Description:</label><br>
+                <select id="combo" name="description">
+                    <option value="تست بورد">تست بورد</option>
+                    <option value="شست و شو">شست و شو</option>
+                    <option value="رفع ایرادات">رفع ایرادات</option>
+                    <option value="متفرقه">متفرقه</option>
+                </select><br><br>
+
+                <label>Start Date/Time:</label><br>
+                <input type="datetime-local" name="start" required><br><br>
+
+                <label>End Date/Time:</label><br>
+                <input type="datetime-local" name="end" required><br><br>
+
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'js/qc_panel_details.js' %}"></script>
+</body>
+</html>

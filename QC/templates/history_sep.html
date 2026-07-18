@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_qc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_qc.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_qc.html" %}
+    
+    <div style="margin-left:220px;">
+        {% if board %}
+            <h1>{{board.title}}V{{board.version}}S{{board.serial}}</h1>
+            <h1>Request {{req}}</h1>
+        {% else %}
+            <h1>History</h1>
+        {% endif %}
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Part Number</th>
+                    <th>Code Anbar</th>
+                    <th>Order Number</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for his in history %}
+                    <tr>    
+                        {% if his.total_quantity %}
+                            <td>{{ his.res_part__part_number}}</td>
+                            <td>{{ his.res_part__id}}</td>
+                            <td>{{ his.res_part__order__order_number}}</td>
+                            <td>{{ his.total_quantity }}</td>
+                        {% else %}
+                            <td>{{ his.res_part.part_number }}</td>
+                            <td>{{ his.res_part.pk }}</td>
+                            <td>{{ his.res_part.order.order_number }}</td>
+                            <td>{{ his.quantity }}</td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No request found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

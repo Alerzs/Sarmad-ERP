@@ -1,0 +1,44 @@
+tr.status-cn td{
+            background-color: #fff9e6;
+        }
+        tr.status-rj td{
+            background-color: #ffe6ea;
+        }
+        tr.status-ac td{
+            background-color: #efffea;
+        }
+        tr.status-na td{
+            background-color: #e9e1e190;
+        }
+        .deactive{
+            display: none;
+        }
+        .orange-form label {
+            font-weight: bold;
+            color: #e65100;
+        }
+        .orange-form input {
+            padding: 8px;
+            border: 2px solid rgba(255, 166, 0, 0.582);
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .orange-form input:focus {
+            border-color: darkorange;
+            box-shadow: 0 0 5px darkorange;
+        }
+        .orange-form .createorder {
+            padding: 8px 12px;
+            background-color: rgba(255, 166, 0, 0.75);
+            color: white;
+            border: none;
+            margin-left: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .orange-form .createorder:hover {
+            background-color: darkorange;
+        }

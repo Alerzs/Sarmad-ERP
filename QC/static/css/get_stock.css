@@ -1,0 +1,30 @@
+.search {
+            display: inline-block;
+            cursor: pointer;
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #6f42c1;
+            color: snow;
+            text-decoration: none;
+            border: 1px solid #4b0082;
+            border-radius: 7px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 90%;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        .green{
+            background-color: #d6f5e3;
+            color: #1f5c33;
+        }
+        .highlight{
+            background-color: #faeaeb;
+        }

@@ -1,0 +1,85 @@
+#drawflow {
+    width: 1500px;
+    height: 90vh;
+    border: 2px solid #ccc;
+    background: white;
+    margin-left: 220px;
+}
+.drawflow-node a{
+    text-decoration: none;
+    color: snow;
+}
+.drawflow_content_node{
+    width: 100%;
+    height: 100%;
+}
+.drawflow_content_node a{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.drawflow-node.bnode {
+height: 30px;
+width: 100px;
+text-align: center;
+padding: 5px 20px;
+background: rgb(41, 41, 221);
+border: 2px solid darkblue;
+color: white;
+cursor: default !important;
+}
+.drawflow-node.pnode {
+height: 30px;
+width: 100px;
+text-align: center;
+padding: 5px 20px;
+background: purple;
+border: 2px solid rgb(78, 0, 78);
+color: white;
+cursor: default !important;
+}
+.drawflow-node.gnode {
+height: 30px;
+width: 100px;
+text-align: center;
+padding: 5px 20px;
+background: green;
+border: 2px solid darkgreen;
+color: white;
+cursor: default !important;
+}
+.drawflow-node.rnode {
+    height: 30px;
+    width: 100px;
+    text-align: center;
+    padding: 5px 20px;
+    background: rgb(155, 11, 11);
+    border: 2px solid rgb(90, 3, 3);
+    color: white;
+    cursor: default !important;
+    }
+.drawflow .inputs div,
+.drawflow .outputs div {
+width: 14px !important;    
+height: 14px !important;
+background: transparent !important;
+border: none !important;
+opacity: 0 !important; 
+pointer-events: none;     
+}
+.drawflow .inputs div:hover,
+.drawflow .outputs div:hover {
+transform: none !important;
+}
+.drawflow .connection .main-path {
+stroke: grey !important; 
+stroke-width: 4px !important;
+opacity: 1;
+}
+
+.drawflow .connection:hover .main-path {
+stroke: #0984e3 !important;
+}
+

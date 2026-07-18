@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+    <title>Project Success</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    <div class="success-container">
+        <h2>Project Added Successfuly</h2>
+    </div>
+</body>
+</html>

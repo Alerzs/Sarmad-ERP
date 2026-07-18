@@ -1,0 +1,32 @@
+.content-wrapper {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: darkred;
+            color: snow;
+            padding:5px 10px;
+            border-radius: 30px;
+            margin: 5px 2px;
+        }
+        .close-button {
+            background-color: darkred;
+            color: snow;
+            border: none;
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+        }
+        .content-wrapper p {
+            margin: 0;
+            padding: 0;
+        }
+        .selected-parts{
+            width: 500px;
+            gap: 5px;
+        }
+        #create-product{
+            display: block;
+            width: 130px;
+            margin: 0 auto;
+        }

@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Materials List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Materials</h1>
+    </div>
+
+    <div style="margin-left: 220px;">
+        <form method="post" id="material-form" onsubmit="return validateForm();">
+            {% csrf_token %}
+            <table id="resizable-table">
+                <thead>
+                    <tr id="header-row">
+                        <th data-field="id">Material ID</th>
+                        <th data-field="dimension">Dimensions</th>
+                        <th data-field="alloy">Alloy</th>
+                        <th data-field="order">Order Name</th>
+                        <th data-field="type">Type</th>
+                        <th data-field="status">Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mat in materials %}
+                        <tr>
+                            <td>{{ mat.pk }}</td>
+                            {% if mat.type == 'SCRAP' %}
+                                <td>-</td>
+                            {% else %}
+                                <td>{{ mat.length }}x{{ mat.width }}x{{ mat.hight }}</td>
+                            {% endif %}
+                            <td>{{ mat.alloy }}</td>
+                            <td>{{ mat.order }}</td>
+                            <td>{{ mat.get_type_display }}</td>
+                            <td>{{ mat.get_status_display }}</td>
+                            <td>
+                                <button type="button" class="edit-btn" data-mode="edit" style="background: none; border: none; cursor: pointer;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20" fill="currentColor" style="pointer-events: none;">
+                                      <path d="M2 14.5V18h3.5L17 6.5l-3.5-3.5L2 14.5zM19.71 4.04a1.003 1.003 0 0 0 0-1.41L17.37.29a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.5 3.5 1.83-1.83z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        
+            <div style="display: flex; flex-direction: row; justify-content: center; margin-top: 10px;">
+                <button class="greenbutton" type="button" onclick="addMaterialRow()" style="padding: 10px 15px;">Add Material</button>
+                <button class="greenbutton" type="submit" style="margin-left: 10px;" style="padding: 10px 15px;">Save Changes</button>
+            </div>
+        </form>
+        <div id="pagination" style="margin: 20px auto 0; text-align: center; font-family: sans-serif; "></div>
+    </div>
+    <script src="{% static 'js/material_list.js' %}"></script>
+</body>
+
+</html>

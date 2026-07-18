@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_assembly.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_assembly.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <style>
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    {% include "partials/_sidebar_assembly.html" %}
+
+    <div style="margin-left: 220px;">
+        <h1>{{product.project}} Product Number {{product.productnumber}}</h1>
+        <div style="display: flex; padding: 0 30px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Parts</th>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <th>Part ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for indx, parts in part_packs.items %}
+                    <tr>
+                        <td rowspan="{{parts|length}}">{{ indx }}</td>
+                        {% for part in parts %}
+                        <td>
+                            <a href="part/{{ part }}">{{ part }}</a>
+                        </td>
+                    </tr>                
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table> 
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Boards</th>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <th>Board ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for indx, boards in board_packs.items %}
+                    <tr>
+                        <td rowspan="{{boards|length}}">{{ indx }}</td>
+                        {% for board in boards %}
+                        <td>
+                            <a href="board/{{ board }}">{{ board }}</a>
+                        </td>
+                    </tr>                
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table> 
+        </div>
+    </div>
+
+</body>
+
+</html>

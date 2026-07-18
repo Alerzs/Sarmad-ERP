@@ -1,0 +1,30 @@
+.pagination {
+    margin-left: 220px;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    list-style: none;
+    gap: 8px;
+    }
+
+    .pagination li {
+    display: inline-block;
+    }
+
+    .pagination a,
+    .pagination span {
+    display: block;
+    padding: 8px 14px;
+    background-color: #007bff;
+    border: 1px solid #ccc;
+    color: snow;
+    text-decoration: none;
+    border-radius: 5px;
+    }
+
+    .pagination .active span,
+    .pagination .disabled span {
+    background-color: #007bff;
+    color: rgb(192, 185, 185);
+    pointer-events: none;
+    }

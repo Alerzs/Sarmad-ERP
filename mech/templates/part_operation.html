@@ -1,0 +1,182 @@
+{% load static %}
+{% load custom_filter %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Part Operation</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_mech.css' %}">
+    <link rel="stylesheet" href="{% static 'css/part_operation.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mech_inputs.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar_mech.html" %}
+    <div style="margin-left:220px;">
+        <h1>Parts</h1>
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Title</th>
+                    <th>Part Serial</th>
+                    <th>Last State</th>
+                    <th>QCP</th>
+                    <th>Step</th>
+                    <th>PowerMill</th>
+                    <th>Add Operation</th>
+                    <th>Finish</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for part in parts %}
+                {% with part_files|get_item:part.id as files %}
+                <tr class="part-row" onclick="toggleOperations({{ part.pk }})">
+                    <td>{{ part.project_name.name }}</td>
+                    <td>{{ part.title }}</td>
+                    <td>{{ part.part_number }}</td>
+                    <td>{{ part.last_op }}</td>
+                    <td>
+                        {% if files.QCP %}
+                        <form action="{% url 'open_file' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="file_path" value="C:\mech\QCP\M{{ part.name }}V{{ part.version }}S{{ part.serial }}.docx">
+                            <input type="hidden" name="rd_url" value="{{ request.path }}">
+                            <button type="submit" style="background:none; border:none; cursor:pointer;" title="Open QCP File">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20" fill="darkgreen" style="pointer-events: none;">
+                                    <path d="M2 14.5V18h3.5L17 6.5l-3.5-3.5L2 14.5zM19.71 4.04a1.003 1.003 0 0 0 0-1.41L17.37.29a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.5 3.5 1.83-1.83z"/>
+                                  </svg>
+                            </button>
+                        </form>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                
+                    <td>
+                        {% if files.STEP %}
+                        <form action="{% url 'open_file' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="file_path" value="C:\mech\STEP\M{{ part.name }}V{{ part.version }}.STEP">
+                            <input type="hidden" name="rd_url" value="{{ request.path }}">
+                            <button type="submit" style="background:none; border:none; cursor:pointer;" title="Open STEP File">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="darkgreen" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 3V15M12 15L8 11M12 15L16 11" stroke="darkgreen" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4 19H20" stroke="green" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </form>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if files.PM %}
+                        <form action="{% url 'open_file' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="file_path" value="C:\mech\PM\M{{ part.name }}V{{ part.version }}.cnc">
+                            <input type="hidden" name="rd_url" value="{{ request.path }}">
+                            <button type="submit" style="background:none; border:none; cursor:pointer;" title="Open STEP File">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="darkgreen" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 3V15M12 15L8 11M12 15L16 11" stroke="darkgreen" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4 19H20" stroke="green" stroke-width="3" stroke-linecap="round"/>
+                                </svg>  
+                            </button>                               
+                        </form>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    {% endwith %}
+                    <td>
+                        <button type="button" onclick="event.stopPropagation(); openModal({{ part.pk }})" style="background: none; border: none; cursor: pointer;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events: none;">
+                                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </td>
+                    <form action="{% url 'send_assemble' %}" method="post" onsubmit="return confirmSubmit()">
+                        {% csrf_token %}
+                        <td>
+                            <input type="hidden" name="part_id" value="{{ part.pk }}">
+                            <button type="submit" style="background: none; border: none; cursor: pointer;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24" fill="darkgreen" style="pointer-events: none;">
+                                    <path d="M307.8 18.4c-12 5-19.8 16.6-19.8 29.6l0 80-112 0c-97.2 0-176 78.8-176 176 0 113.3 81.5 163.9 100.2 174.1 2.5 1.4 5.3 1.9 8.1 1.9 10.9 0 19.7-8.9 19.7-19.7 0-7.5-4.3-14.4-9.8-19.5-9.4-8.8-22.2-26.4-22.2-56.7 0-53 43-96 96-96l96 0 0 80c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-9.2-9.2-22.9-11.9-34.9-6.9z"/>
+                                </svg>
+                            </button>
+                        </td>   
+                    </form>
+                </tr>
+                <tr id="operations-{{ part.pk }}" class="operation-details-row" style="display: none;">
+                    <td colspan="9">
+                        {% with operations=operations_by_part|get_item:part.pk %}
+                            {% if operations %}
+                                <table class="inner-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Description</th>
+                                            <th>Operator</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Duration</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for op in operations %}
+                                            <tr>
+                                                <td>{{ op.description }}</td>
+                                                <td>{{ op.operator.username }}</td>
+                                                <td>{{ op.start }}</td>
+                                                <td>{{ op.end }}</td>
+                                                <td>{{ op.duration }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <p>No operations found for this part.</p>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="operationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 style="color: black;">Create Operation</h2>
+            <form method="post" action="{% url 'operation_part' %}">
+                {% csrf_token %}
+                <input type="hidden" name="part_id" id="partIdInput">
+                <label for="combo">Description:</label><br>
+                <select id="combo" name="description">
+                    <option value="خشن تراشی">خشن تراشی</option>
+                    <option value="تراشکاری">تراشکاری</option>
+                    <option value="رو تراشی">رو تراشی</option>
+                    <option value="کف تراشی">کف تراشی</option>
+                    <option value="آبکاری">آبکاری</option>
+                    <option value="حک لیزر">حک لیزر</option>
+                    <option value="برش لیزر">برش لیزر</option>
+                    <option value="سوراخ کاری">سوراخ کاری</option>
+                    <option value="متفرقه">متفرقه</option>
+                </select><br><br>
+
+                <label>Start Date/Time:</label><br>
+                <input type="datetime-local" name="start" required><br><br>
+
+                <label>End Date/Time:</label><br>
+                <input type="datetime-local" name="end" required><br><br>
+
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'js/part_operation.js' %}"></script> 
+</body>
+</html>

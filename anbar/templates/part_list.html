@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Part List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/part_list.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+</head>
+<body>
+    {% include "partials/_sidebar.html" %}
+    
+    <div style="margin-left:220px;">
+        <h1>Part List</h1>
+    </div>
+    <div style="margin:80px 0 0 220px;">
+      <table id="resizable-table">
+          <thead>
+              <tr>
+                  <th data-field="code_anbar">Code Anbar</th>
+                  <th data-field="part_number">Part Number</th>
+                  <th data-field="order_number">Order Number</th>
+                  <th data-field="failure">Status</th>
+                  <th data-field="description">Description</th>
+                  <th data-field="count">Quantity</th>
+                  <th data-field="reserve">Reserve</th>
+                  <th data-field="ordered">Freeze</th>
+                  <th>Edit</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for part in parts %}
+              <tr
+                    {% if part.failure == 'REJECT' %}
+                        class="status-empty"
+                    {% elif part.failure == 'ACCEPT' %}
+                        pass
+                    {% else %}
+                        class="status-tahvil"
+                    {% endif %}
+              >
+                  <td>{{ part.pk }}</td>
+                  <td>{{ part.part_number }}</td>
+                  <td>{{ part.order.order_number }}</td>
+                  <td>{{ part.get_failure_display }}</td>
+                  <td>{{ part.description|default:"-" }}</td>
+                  <td>{{ part.count }}</td>
+                  <td>{{ part.reserve }}</td>
+                  <td>{{ part.freeze }}</td>
+                  <td>
+                    <button class="edit-btn" data-mode="edit" style="background: none; border: none; cursor: pointer;">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20" fill="currentColor" style="pointer-events: none;">
+                        <path d="M2 14.5V18h3.5L17 6.5l-3.5-3.5L2 14.5zM19.71 4.04a1.003 1.003 0 0 0 0-1.41L17.37.29a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.5 3.5 1.83-1.83z"/>
+                      </svg>
+                    </button>
+                  </td>
+                  
+              </tr>
+              {% empty %}
+              <tr>
+                  <td colspan="8">No parts available.</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+    <div id="pagination" style="margin-top: 10px; text-align: center; font-family: sans-serif;"></div>
+    <script src="{% static 'js/part_list.js' %}"></script>  
+</body>
+</html>

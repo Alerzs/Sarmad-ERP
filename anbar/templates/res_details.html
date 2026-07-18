@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/table_adjust.js' %}"></script>
+    <script src="{% static 'js/table_sort.js' %}"></script>
+</head>
+<style>
+    button:hover{
+        opacity: 0.7;
+    }
+</style>
+<body>
+    {% include "partials/_sidebar.html" %}
+
+    <div style="margin-left:220px;">
+        <h1>Request {{restock.first.sep_req.pk}}</h1>
+        {% if restock.first.sep_req.status == "PND" %}
+            <form method="post">
+                {% csrf_token %}
+                <button name="action" value="accept" style="padding: 10px 15px; background-color: green; color: snow; border-radius: 5px; cursor: pointer;">Accept</button>
+                <button name="action" value="reject"  style="padding: 10px 15px; background-color: red; color: snow; border-radius: 5px; cursor: pointer;">Reject</button>
+            </form>
+        {% endif %}
+    </div>
+    <div style="margin-left: 220px;">
+        <table id="resizable-table">
+            <thead>
+                <tr>
+                    <th>Part Number</th>
+                    <th>Quantity</th>
+                    <th>Aveilable</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in restock %}
+                    <tr>    
+                        <td>{{ res.res_part.pk }}</td>
+                        <td>{{ res.quantity }}</td>
+                        <td>{{ res.aveilable }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7">No request found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
